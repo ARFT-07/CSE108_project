@@ -1,0 +1,73 @@
+/* Root background */
+.root {
+    -fx-background-image: url("/org/buet/fantasymanagerxi/images/signup_login_page.png");
+    -fx-background-size: cover;
+    -fx-background-position: center;
+}
+
+
+/* Signup box */
+/*.signup-box {*/
+/*    -fx-background-color: #191919;*/
+/*    -fx-padding: 40;*/
+/*    -fx-alignment: center;*/
+/*    -fx-spacing: 18;*/
+/*    -fx-background-radius: 20;*/
+
+/*    !* Glow shadow *!*/
+/*    -fx-effect: dropshadow(three-pass-box, rgba(0,255,255,0.25), 25, 0, 0, 0);*/
+/*}*/
+
+/* Title */
+.signup-box Label {
+    -fx-text-fill: white;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+}
+
+/* Text fields */
+.text-field, .password-field {
+    -fx-background-color: transparent;
+    -fx-border-color: #3498db;
+    -fx-border-radius: 24;
+    -fx-background-radius: 24;
+    -fx-text-fill: white;
+    -fx-padding: 10;
+    -fx-pref-width: 230;
+    -fx-prompt-text-fill: #bdc3c7;
+}
+
+/* Focus glow */
+.text-field:focused, .password-field:focused {
+    -fx-border-color: #2ecc71;
+    -fx-effect: dropshadow(gaussian, rgba(46,204,113,0.6), 15, 0, 0, 0);
+}
+
+/* Primary Button */
+#signupButton {
+    -fx-background-color: transparent;
+    -fx-border-color: #2ecc71;
+    -fx-border-radius: 24;
+    -fx-text-fill: white;
+    -fx-padding: 10 35 10 35;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+#signupButton:hover {
+    -fx-background-color: #2ecc71;
+    -fx-text-fill: #191919;
+    -fx-effect: dropshadow(gaussian, rgba(46,204,113,0.8), 20, 0, 0, 0);
+}
+
+/* Secondary Button */
+#backButton {
+    -fx-background-color: transparent;
+    -fx-text-fill: #3498db;
+    -fx-underline: true;
+    -fx-cursor: hand;
+}
+
+#backButton:hover {
+    -fx-text-fill: #2ecc71;
+}

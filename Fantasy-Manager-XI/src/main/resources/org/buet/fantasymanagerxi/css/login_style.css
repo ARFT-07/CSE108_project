@@ -1,0 +1,63 @@
+/* Root background */
+.root {
+    -fx-background-color: #34495e;
+    -fx-font-family: "Sans Serif";
+}
+
+/*!* Login box *!*/
+/*.login-box {*/
+/*    -fx-background-color: #191919;*/
+/*    -fx-padding: 40;*/
+/*    -fx-alignment: center;*/
+/*    -fx-spacing: 20;*/
+/*    -fx-background-radius: 20;*/
+
+/*    !* Glow / shadow *!*/
+/*    -fx-effect: dropshadow(three-pass-box, rgba(0,255,255,0.2), 20, 0, 0, 0);*/
+/*}*/
+
+/* Label / title */
+.login-box Label {
+    -fx-text-fill: white;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(0,255,255,0.5), 2, 0, 0, 0);
+}
+
+/* Text fields */
+.text-field, .password-field {
+    -fx-background-color: transparent;
+    -fx-border-color: #3498db;
+    -fx-border-radius: 24;
+    -fx-background-radius: 24;
+    -fx-text-fill: white;
+    -fx-padding: 10;
+    -fx-pref-width: 200;
+    -fx-prompt-text-fill: #bdc3c7;
+}
+
+/* Focused state */
+.text-field:focused, .password-field:focused {
+    -fx-border-color: #2ecc71;
+    -fx-effect: dropshadow(gaussian, rgba(46, 204, 113, 0.5), 10, 0, 0, 0);
+}
+
+/* Button */
+.button {
+    -fx-background-color: transparent;
+    -fx-border-color: #2ecc71;
+    -fx-border-radius: 24;
+    -fx-text-fill: white;
+    -fx-padding: 10 30 10 30;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(46,204,113,0.3), 10, 0, 0, 0);
+    -fx-transition: all 0.2s ease;
+}
+
+/* Button hover */
+.button:hover {
+    -fx-background-color: #2ecc71;
+    -fx-text-fill: #191919;
+    -fx-effect: dropshadow(gaussian, rgba(46,204,113,0.7), 20, 0, 0, 0);
+}
