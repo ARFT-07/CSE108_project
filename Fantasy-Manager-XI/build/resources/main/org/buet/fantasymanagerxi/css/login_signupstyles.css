@@ -1,0 +1,11 @@
+.background-pane {
+    -fx-background-image: url("/org/buet/fantasymanagerxi/images/signup_login_page.png");
+    -fx-background-size: cover;
+    -fx-background-position: center center;
+    -fx-background-repeat: no-repeat;
+}
+.button {
+    -fx-background-color: rgba(255, 0, 0, 0.85);
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
