@@ -1,0 +1,501 @@
+Excellent — let’s build **FantasyManagerXI** the way a senior JavaFX architect would structure it: clean MVC, scalable, and maintainable.
+
+We’ll go phase by phase, from project setup to advanced improvements.
+
+---
+
+# 🧩 PHASE 1 — Project Setup
+
+## 1.1 Create JavaFX Project
+
+If using IntelliJ:
+
+* New Project → JavaFX
+* Add VM options:
+
+```bash
+--module-path /path/to/javafx/lib --add-modules javafx.controls,javafx.fxml,javafx.media
+```
+
+If using Maven, include:
+
+```xml
+<dependencies>
+    <dependency>
+        <groupId>org.openjfx</groupId>
+        <artifactId>javafx-controls</artifactId>
+        <version>21</version>
+    </dependency>
+    <dependency>
+        <groupId>org.openjfx</groupId>
+        <artifactId>javafx-media</artifactId>
+        <version>21</version>
+    </dependency>
+</dependencies>
+```
+
+---
+
+## 1.2 Package Structure (MVC Clean Architecture)
+
+```
+com.fantasymanagerxi
+│
+├── MainApp.java
+├── model
+│   ├── Player.java
+│   ├── Team.java
+│   └── LeagueTableEntry.java
+│
+├── view
+│   ├── HomePageView.java
+│   ├── TeamDetailsView.java
+│
+├── controller
+│   ├── HomeController.java
+│   └── TeamController.java
+│
+├── service
+│   └── DataService.java
+│
+└── util
+    └── SceneManager.java
+```
+
+✔ Separation of concerns
+✔ No business logic inside UI classes
+✔ Data isolated in service layer
+
+---
+
+# 🧠 PHASE 2 — Data Model
+
+We use **in-memory data only** (no database).
+
+---
+
+## 2.1 Player Model
+
+```java
+package com.fantasymanagerxi.model;
+
+import javafx.beans.property.*;
+
+public class Player {
+
+    private final StringProperty name;
+    private final IntegerProperty age;
+    private final IntegerProperty goals;
+    private final DoubleProperty salary;
+
+    public Player(String name, int age, int goals, double salary) {
+        this.name = new SimpleStringProperty(name);
+        this.age = new SimpleIntegerProperty(age);
+        this.goals = new SimpleIntegerProperty(goals);
+        this.salary = new SimpleDoubleProperty(salary);
+    }
+
+    public StringProperty nameProperty() { return name; }
+    public IntegerProperty ageProperty() { return age; }
+    public IntegerProperty goalsProperty() { return goals; }
+    public DoubleProperty salaryProperty() { return salary; }
+}
+```
+
+Why JavaFX Properties?
+
+* Required for TableView binding
+* Enables automatic UI updates
+
+---
+
+## 2.2 Team Model
+
+```java
+package com.fantasymanagerxi.model;
+
+import javafx.collections.*;
+
+public class Team {
+
+    private String name;
+    private ObservableList<Player> players;
+
+    public Team(String name) {
+        this.name = name;
+        this.players = FXCollections.observableArrayList();
+    }
+
+    public String getName() { return name; }
+    public ObservableList<Player> getPlayers() { return players; }
+}
+```
+
+---
+
+## 2.3 LeagueTableEntry Model
+
+```java
+public class LeagueTableEntry {
+
+    private String teamName;
+    private int points;
+    private int goalDifference;
+
+    public LeagueTableEntry(String teamName, int points, int gd) {
+        this.teamName = teamName;
+        this.points = points;
+        this.goalDifference = gd;
+    }
+
+    public String getTeamName() { return teamName; }
+    public int getPoints() { return points; }
+    public int getGoalDifference() { return goalDifference; }
+}
+```
+
+---
+
+## 2.4 DataService (Hardcoded Top 6 Teams)
+
+```java
+public class DataService {
+
+    private ObservableList<Team> teams = FXCollections.observableArrayList();
+
+    public DataService() {
+        createTeams();
+    }
+
+    private void createTeams() {
+        Team arsenal = new Team("Arsenal");
+        for(int i=1; i<=15; i++) {
+            arsenal.getPlayers().add(
+                new Player("Arsenal Player " + i,
+                        18 + i,
+                        i * 2,
+                        50000 + i * 1000)
+            );
+        }
+        teams.add(arsenal);
+
+        // Repeat for 5 more teams
+    }
+
+    public ObservableList<Team> getTeams() {
+        return teams;
+    }
+}
+```
+
+---
+
+# 🏠 PHASE 3 — Homepage UI
+
+The homepage must show:
+
+* 6 Teams (clickable)
+* League Table
+* Matchday Highlights
+
+We’ll use:
+
+| Feature      | Component  |
+| ------------ | ---------- |
+| Layout       | BorderPane |
+| Teams        | ListView   |
+| League Table | TableView  |
+| Highlights   | MediaView  |
+
+---
+
+## 3.1 HomePageView Layout
+
+```java
+public class HomePageView {
+
+    private BorderPane root;
+    private ListView<Team> teamList;
+    private TableView<LeagueTableEntry> table;
+
+    public HomePageView() {
+        root = new BorderPane();
+
+        teamList = new ListView<>();
+        table = new TableView<>();
+
+        VBox leftPanel = new VBox(new Label("Teams"), teamList);
+        VBox centerPanel = new VBox(new Label("League Table"), table);
+
+        root.setLeft(leftPanel);
+        root.setCenter(centerPanel);
+    }
+
+    public BorderPane getRoot() { return root; }
+}
+```
+
+---
+
+# 🔁 PHASE 4 — Navigation System
+
+We’ll use **Scene Switching**.
+
+---
+
+## 4.1 SceneManager Utility
+
+```java
+public class SceneManager {
+
+    private static Stage primaryStage;
+
+    public static void setStage(Stage stage) {
+        primaryStage = stage;
+    }
+
+    public static void switchScene(Parent root) {
+        primaryStage.setScene(new Scene(root, 1000, 600));
+    }
+}
+```
+
+---
+
+## 4.2 Clickable Team Names
+
+Inside HomeController:
+
+```java
+teamList.setOnMouseClicked(event -> {
+    Team selected = teamList.getSelectionModel().getSelectedItem();
+    if(selected != null) {
+        TeamDetailsView view = new TeamDetailsView(selected);
+        SceneManager.switchScene(view.getRoot());
+    }
+});
+```
+
+✔ Clean navigation
+✔ No coupling between views
+
+---
+
+# 📋 PHASE 5 — Team Details Page
+
+This page must show:
+
+* Team name
+* TableView of players
+* Sorting options
+
+---
+
+## 5.1 TableView Setup
+
+```java
+TableView<Player> playerTable = new TableView<>();
+
+TableColumn<Player, String> nameCol = new TableColumn<>("Name");
+nameCol.setCellValueFactory(data -> data.getValue().nameProperty());
+
+TableColumn<Player, Number> ageCol = new TableColumn<>("Age");
+ageCol.setCellValueFactory(data -> data.getValue().ageProperty());
+
+TableColumn<Player, Number> goalsCol = new TableColumn<>("Goals");
+goalsCol.setCellValueFactory(data -> data.getValue().goalsProperty());
+
+TableColumn<Player, Number> salaryCol = new TableColumn<>("Salary");
+salaryCol.setCellValueFactory(data -> data.getValue().salaryProperty());
+
+playerTable.getColumns().addAll(nameCol, ageCol, goalsCol, salaryCol);
+playerTable.setItems(team.getPlayers());
+```
+
+---
+
+# 🔢 PHASE 6 — Sorting Logic
+
+Two ways:
+
+---
+
+## Option 1: Built-in TableView Sorting (Recommended)
+
+```java
+playerTable.getSortOrder().add(goalsCol);
+goalsCol.setSortType(TableColumn.SortType.DESCENDING);
+```
+
+✔ JavaFX handles sorting automatically.
+
+---
+
+## Option 2: Custom Comparator Sorting
+
+Example: Sort by Goals descending:
+
+```java
+FXCollections.sort(team.getPlayers(),
+        Comparator.comparingInt(Player::getGoals).reversed());
+```
+
+To support this:
+
+Add getter in Player:
+
+```java
+public int getGoals() {
+    return goals.get();
+}
+```
+
+---
+
+## Optional Filter Example
+
+```java
+FilteredList<Player> filtered = new FilteredList<>(team.getPlayers(), p -> true);
+
+filtered.setPredicate(player -> player.getGoals() > 5);
+
+playerTable.setItems(filtered);
+```
+
+---
+
+# 🎥 PHASE 7 — Media Player Integration
+
+If you want matchday highlights video:
+
+---
+
+## 7.1 Media Setup
+
+```java
+Media media = new Media(new File("highlight.mp4").toURI().toString());
+MediaPlayer mediaPlayer = new MediaPlayer(media);
+MediaView mediaView = new MediaView(mediaPlayer);
+
+mediaPlayer.play();
+```
+
+Add to layout:
+
+```java
+root.setBottom(mediaView);
+```
+
+---
+
+## Fallback (If no video)
+
+```java
+Label highlights = new Label("Matchday 1: Arsenal 3-1 Chelsea");
+root.setBottom(highlights);
+```
+
+---
+
+# 🏗 PHASE 8 — Final Structure Overview
+
+```
+MainApp
+   ↓
+HomeController
+   ↓
+HomePageView
+   ↓ click
+TeamDetailsView
+```
+
+Everything flows through SceneManager.
+
+---
+
+# 🎨 OPTIONAL ADVANCED IMPROVEMENTS
+
+---
+
+## 1️⃣ Migrate to SQLite Later
+
+Replace DataService with DAO pattern:
+
+```
+TeamDAO
+PlayerDAO
+DatabaseManager
+```
+
+Use JDBC:
+
+```java
+Connection conn = DriverManager.getConnection("jdbc:sqlite:fantasy.db");
+```
+
+Replace in-memory lists with DB queries.
+
+---
+
+## 2️⃣ Add CSS Styling
+
+Create `style.css`
+
+```css
+.root {
+    -fx-background-color: #1e1e1e;
+}
+
+.table-view {
+    -fx-border-color: gold;
+}
+```
+
+Load it:
+
+```java
+scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
+```
+
+---
+
+## 3️⃣ Improve UI Layout
+
+Use:
+
+* GridPane for structured layout
+* SplitPane for adjustable panels
+* ToolBar for navigation
+
+---
+
+# ✅ FINAL IMPLEMENTATION CHECKLIST
+
+✔ Project runs with JavaFX 21
+✔ 6 teams created
+✔ 15 players per team
+✔ Homepage displays:
+
+* Team list
+* League table
+* Highlights section
+
+✔ Clicking team opens details page
+✔ Player table sortable by:
+
+* Goals
+* Age
+* Salary
+
+✔ Uses ObservableList
+✔ Follows MVC separation
+✔ No business logic inside View classes
+✔ Scene switching works correctly
+
+---
+
+If you’d like, I can next provide:
+
+* A simplified complete working project skeleton
+* UML diagram
+* Or a polished UI layout design guide 🚀
