@@ -4,17 +4,17 @@
     -fx-font-family: "Sans Serif";
 }
 
-/* Login box */
-.login-box {
-    -fx-background-color: #191919;
-    -fx-padding: 40;
-    -fx-alignment: center;
-    -fx-spacing: 20;
-    -fx-background-radius: 20;
+/*!* Login box *!*/
+/*.login-box {*/
+/*    -fx-background-color: #191919;*/
+/*    -fx-padding: 40;*/
+/*    -fx-alignment: center;*/
+/*    -fx-spacing: 20;*/
+/*    -fx-background-radius: 20;*/
 
-    /* Glow / shadow */
-    -fx-effect: dropshadow(three-pass-box, rgba(0,255,255,0.2), 20, 0, 0, 0);
-}
+/*    !* Glow / shadow *!*/
+/*    -fx-effect: dropshadow(three-pass-box, rgba(0,255,255,0.2), 20, 0, 0, 0);*/
+/*}*/
 
 /* Label / title */
 .login-box Label {
