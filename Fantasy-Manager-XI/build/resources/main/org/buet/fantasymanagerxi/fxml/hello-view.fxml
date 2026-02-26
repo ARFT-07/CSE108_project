@@ -7,21 +7,37 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" prefHeight="600.0" prefWidth="1000.0" spacing="20.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.buet.fantasymanagerxi.HelloController">
-  <padding>
-    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-  </padding>
-   <HBox prefHeight="100.0" prefWidth="200.0">
-      <children>
-        <Button alignment="CENTER" onAction="#onHelloButtonClick" prefHeight="200.0" prefWidth="400.0" text="Hello!" />
-      </children>
-   </HBox>
+<VBox alignment="CENTER" prefHeight="600.0" prefWidth="1000.0" spacing="20.0"
+      xmlns="http://javafx.com/javafx/25"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.buet.fantasymanagerxi.HelloController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
 
-  <Label fx:id="welcomeText" />
-   <VBox prefHeight="200.0" prefWidth="100.0" />
-   <Button fx:id="pdb_btn" maxHeight="200.0" maxWidth="200.0" minHeight="200.0" mnemonicParsing="false" onAction="#onPdbButtonClick" text="Player DB" textFill="#dd0f0f">
-      <font>
-         <Font size="29.0" />
-      </font>
-   </Button>
+    <HBox prefHeight="100.0" prefWidth="200.0">
+        <children>
+            <Button alignment="CENTER"
+                    onAction="#onHelloButtonClick"
+                    prefHeight="200.0" prefWidth="400.0"
+                    text="Hello!" />
+        </children>
+    </HBox>
+
+    <Label fx:id="welcomeText" />
+
+    <VBox prefHeight="200.0" prefWidth="100.0" />
+
+    <Button fx:id="pdb_btn"
+            maxHeight="200.0" maxWidth="200.0"
+            minHeight="200.0"
+            mnemonicParsing="false"
+            onAction="#onPdbButtonClick"
+            text="Player DB"
+            textFill="#dd0f0f">
+        <font>
+            <Font size="29.0" />
+        </font>
+    </Button>
+
 </VBox>
