@@ -12,4 +12,6 @@ module org.buet.fantasymanagerxi {
 
     opens org.buet.fantasymanagerxi to javafx.fxml;
     exports org.buet.fantasymanagerxi;
+    exports org.buet.fantasymanagerxi.model;
+    opens org.buet.fantasymanagerxi.model to javafx.fxml;
 }

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.buet.fantasymanagerxi.PlayerDetailController"
+            prefWidth="900" prefHeight="680"
+            style="-fx-background-color: #1a1a2e;">
+
+    <!-- TOP BAR -->
+    <top>
+        <HBox style="-fx-background-color: #16213e; -fx-padding: 14 20;"
+              alignment="CENTER_LEFT" spacing="16">
+            <Button fx:id="backBtn" text="← Back to Database"
+                    onAction="#goBack"
+                    style="-fx-background-color: transparent;
+                           -fx-text-fill: #aaaaaa; -fx-font-size:13;
+                           -fx-cursor: hand;"/>
+        </HBox>
+    </top>
+
+    <center>
+        <HBox spacing="0">
+
+            <!-- LEFT: Photo + quick stats -->
+            <VBox prefWidth="300"
+                  style="-fx-background-color: #16213e; -fx-padding: 30;"
+                  spacing="14" alignment="TOP_CENTER">
+
+                <ImageView fx:id="playerPhoto"
+                           fitWidth="220" fitHeight="220"
+                           preserveRatio="true"/>
+
+                <Label fx:id="playerName"
+                       style="-fx-text-fill: white; -fx-font-size: 20;
+                              -fx-font-weight: bold; -fx-wrap-text: true;"
+                       alignment="CENTER"/>
+
+                <Label fx:id="playerClub"
+                       style="-fx-text-fill: #aaaaaa; -fx-font-size: 14;"/>
+
+                <Label fx:id="playerPosition"
+                       style="-fx-background-radius: 6; -fx-padding: 4 12;
+                              -fx-font-weight: bold; -fx-font-size: 13;
+                              -fx-text-fill: white;"/>
+
+                <Label fx:id="playerRating"
+                       style="-fx-text-fill: #F1C40F; -fx-font-size: 22;
+                              -fx-font-weight: bold;"/>
+            </VBox>
+
+            <!-- RIGHT: Full details -->
+            <ScrollPane fitToWidth="true" HBox.hgrow="ALWAYS"
+                        style="-fx-background: #1a1a2e;
+                               -fx-background-color: #1a1a2e;">
+                <VBox fx:id="detailPanel" spacing="0"
+                      style="-fx-padding: 30;"/>
+            </ScrollPane>
+
+        </HBox>
+    </center>
+</BorderPane>
