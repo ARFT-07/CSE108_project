@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.buet.fantasymanagerxi.PlayerDBController"
+            prefWidth="1100" prefHeight="720"
+            style="-fx-background-color: #1a1a2e;">
+
+    <!-- TOP BAR -->
+    <top>
+        <VBox style="-fx-background-color: #16213e; -fx-padding: 16;">
+            <HBox alignment="CENTER_LEFT" spacing="16">
+                <Button fx:id="backBtn" text="← Back"
+                        onAction="#goBack"
+                        style="-fx-background-color: transparent;
+                               -fx-text-fill: #aaaaaa; -fx-font-size:14;
+                               -fx-cursor: hand;"/>
+                <Label text="⚽ Player Database"
+                       style="-fx-text-fill: white; -fx-font-size: 22;
+                              -fx-font-weight: bold;"/>
+                <HBox HBox.hgrow="ALWAYS"/>
+                <TextField fx:id="searchField"
+                           promptText="Search player name..."
+                           prefWidth="260"
+                           style="-fx-background-color: #0f3460;
+                                  -fx-text-fill: white;
+                                  -fx-prompt-text-fill: #888;
+                                  -fx-background-radius: 20;
+                                  -fx-padding: 8 14 8 14;
+                                  -fx-font-size: 13;
+                                  -fx-border-color: #e94560;
+                                  -fx-border-radius: 20;"/>
+            </HBox>
+
+            <!-- FILTERS -->
+            <HBox spacing="10" style="-fx-padding: 12 0 0 0;" alignment="CENTER_LEFT">
+                <!-- Club filter -->
+                <ComboBox fx:id="clubFilter"
+                          promptText="All Clubs"
+                          prefWidth="180"
+                          style="-fx-background-color: #0f3460;
+                                 -fx-text-fill: white;"/>
+
+                <!-- Position filter toggle buttons -->
+                <ToggleButton fx:id="btnAll"  text="ALL"  onAction="#filterPosition"
+                              userData="ALL"  selected="true" styleClass="pos-btn"/>
+                <ToggleButton fx:id="btnGK"   text="GK"   onAction="#filterPosition"
+                              userData="GK"                 styleClass="pos-btn"/>
+                <ToggleButton fx:id="btnDEF"  text="DEF"  onAction="#filterPosition"
+                              userData="DEF"                styleClass="pos-btn"/>
+                <ToggleButton fx:id="btnMID"  text="MID"  onAction="#filterPosition"
+                              userData="MID"                styleClass="pos-btn"/>
+                <ToggleButton fx:id="btnFWD"  text="FWD"  onAction="#filterPosition"
+                              userData="FWD"                styleClass="pos-btn"/>
+
+                <HBox HBox.hgrow="ALWAYS"/>
+                <Label fx:id="countLabel"
+                       text="96 players"
+                       style="-fx-text-fill: #888; -fx-font-size: 13;"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <!-- PLAYER GRID -->
+    <center>
+        <ScrollPane fitToWidth="true"
+                    style="-fx-background: #1a1a2e;
+                           -fx-background-color: #1a1a2e;">
+            <FlowPane fx:id="playerGrid"
+                      hgap="14" vgap="14"
+                      style="-fx-background-color: #1a1a2e;
+                             -fx-padding: 20;"/>
+        </ScrollPane>
+    </center>
+</BorderPane>
