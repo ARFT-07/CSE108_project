@@ -14,3 +14,4 @@ out/
 target/
 .gradle/
 build/
+*.mp4
