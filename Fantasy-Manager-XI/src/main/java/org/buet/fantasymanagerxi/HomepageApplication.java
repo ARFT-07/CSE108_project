@@ -13,6 +13,7 @@ public class HomepageApplication extends Application {
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(HomepageApplication.class.getResource("/org/buet/fantasymanagerxi/fxml/homepage-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1000, 600);
+        scene.getStylesheets().add(getClass().getResource("/org/buet/fantasymanagerxi/css/homepage-style.css").toExternalForm());
         stage.setTitle("Fantasy League XI");
         //Image img=(Image) new Image(getClass().getResourceAsStream("/images/logo.png"));
         Image img = (Image) new Image(
