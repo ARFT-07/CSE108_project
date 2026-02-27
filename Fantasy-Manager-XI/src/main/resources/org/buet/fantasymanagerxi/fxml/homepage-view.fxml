@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.media.MediaView?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.buet.fantasymanagerxi.HomeController">
    <left>
       <VBox prefHeight="250.0" prefWidth="250.0" spacing="10.0" styleClass="side-panel" BorderPane.alignment="CENTER">
          <padding>
@@ -39,7 +39,7 @@
             <Label styleClass="section-title" text="League Table" />
             <TableView fx:id="leagueTableView" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
               <columns>
-                <TableColumn fx:id="postionCol" prefWidth="75.0" text="Pos" />
+                <TableColumn fx:id="positionCol" prefWidth="75.0" text="Pos" />
                 <TableColumn fx:id="teamCol" prefWidth="75.0" text="Team" />
                   <TableColumn fx:id="pointsCol" prefWidth="75.0" text="Points" />
                   <TableColumn fx:id="gdCol" prefWidth="75.0" text="GD" />
@@ -57,9 +57,8 @@
             <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
          </padding>
          <children>
-            <Label fx:id="highlightLabel" styleClass="highlight-text" text="Matchday Highlights" />
             <MediaView fx:id="mediaView" fitHeight="200.0" fitWidth="500.0" />
-            <HBox prefHeight="100.0" prefWidth="200.0" spacing="15.0" StackPane.alignment="BOTTOM_CENTER">
+            <HBox prefHeight="100.0" prefWidth="100.0" spacing="15.0" StackPane.alignment="BOTTOM_CENTER">
                <children>
                   <Button fx:id="play" mnemonicParsing="false" onAction="#handlePlay" text="play" />
                   <Button fx:id="pausebtn" mnemonicParsing="false" onAction="#handlePause" text="pause" />
@@ -68,4 +67,7 @@
          </children>
       </StackPane>
    </bottom>
+   <top>
+      <Button fx:id="gotoPlayerDb" mnemonicParsing="false" onAction="#movetoplayerDb" text="Player DB" BorderPane.alignment="TOP_RIGHT" />
+   </top>
 </BorderPane>
