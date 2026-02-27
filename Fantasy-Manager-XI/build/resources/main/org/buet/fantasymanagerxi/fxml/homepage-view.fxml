@@ -20,7 +20,7 @@
          </padding>
          <children>
             <Label styleClass="section-title" text="Top 6 Teams" />
-            <ListView fx:id="teamListView" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="150.0" VBox.vgrow="ALWAYS">
+            <ListView fx:id="teamListView" styleClass="list-view" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="150.0" VBox.vgrow="ALWAYS">
                <padding>
                   <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                </padding>
