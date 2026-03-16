@@ -18,9 +18,10 @@
                   <Font name="System Bold" size="24.0" />
                </font>
             </Label>
-            <TextField fx:id="name" promptText="Username" />
-            <PasswordField fx:id="pass" promptText="Enter password" />
-            <Button fx:id="loginBtn" mnemonicParsing="false" onAction="#checkValidLogin" text="Login">
+            <TextField fx:id="usernameField" promptText="Club name (e.g. Chelsea)" />
+            <PasswordField fx:id="passwordField" promptText="Password" />
+            <Label fx:id="errorLabel" style="-fx-text-fill: #e94560; -fx-font-size: 12;"/>
+            <Button fx:id="loginBtn" onAction="#handleLogin" text="Login">
                <font>
                   <Font name="System Bold Italic" size="24.0" />
                </font>

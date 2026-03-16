@@ -55,27 +55,32 @@ public class TransferMarketServer {
     }
 
     private static void loadAllData() {
-        String[] clubs = {
-                "Arsenal", "Chelsea", "Liverpool",
-                "ManCity", "ManUtd", "Tottenham"
-        };
+        // key = credential name, value = txt file name
+        Map<String, String> clubMap = new LinkedHashMap<>();
+        clubMap.put("CHELSEA",   "Chelsea");
+        clubMap.put("LIVERPOOL", "Liverpool");
+        clubMap.put("ARSENAL",   "Arsenal");
+        clubMap.put("MANUTD",    "ManUtd");
+        clubMap.put("MANCITY",   "ManCity");
+        clubMap.put("SPURS",     "Tottenham");
 
-        for (String club : clubs) {
-            String path = "/org/buet/fantasymanagerxi/data/" + club + ".txt";
+        for (Map.Entry<String, String> entry : clubMap.entrySet()) {
+            String credentialName = entry.getKey();  // e.g. "CHELSEA"
+            String fileName       = entry.getValue(); // e.g. "Chelsea"
+            String path = "/org/buet/fantasymanagerxi/data/" + fileName + ".txt";
             InputStream is = TransferMarketServer.class.getResourceAsStream(path);
             if (is == null) {
                 System.out.println("WARNING: Could not find " + path);
-                clubSquads.put(club, new ArrayList<>());
+                clubSquads.put(credentialName, new ArrayList<>());
                 continue;
             }
-            List<Player> players = parsePlayers(is, club);
-            clubSquads.put(club, players);
-            System.out.println("Loaded " + players.size() + " players for " + club);
+            List<Player> players = parsePlayers(is, fileName);
+            clubSquads.put(credentialName, players);
+            System.out.println("Loaded " + players.size() + " players for " + credentialName);
         }
 
         loadCredentials();
     }
-
     private static List<Player> parsePlayers(InputStream is, String club) {
         List<Player> list = new ArrayList<>();
         try {
@@ -131,12 +136,6 @@ public class TransferMarketServer {
         InputStream is = TransferMarketServer.class.getResourceAsStream(path);
         if (is == null) {
             System.out.println("WARNING: ValidLoginInfo.txt not found. Using defaults.");
-            loginCredentials.put("Arsenal",   "arsenal");
-            loginCredentials.put("Chelsea",   "chelsea");
-            loginCredentials.put("Liverpool", "liverpool");
-            loginCredentials.put("ManCity",   "mancity");
-            loginCredentials.put("ManUtd",    "manutd");
-            loginCredentials.put("Tottenham", "tottenham");
             return;
         }
         try (BufferedReader br = new BufferedReader(
@@ -145,7 +144,7 @@ public class TransferMarketServer {
             while ((line = br.readLine()) != null) {
                 line = line.trim();
                 if (line.isBlank()) continue;
-                String[] parts = line.split(":");
+                String[] parts = line.split(" ");
                 if (parts.length == 2) {
                     loginCredentials.put(parts[0].trim(), parts[1].trim());
                 }
@@ -153,7 +152,7 @@ public class TransferMarketServer {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("Credentials loaded for: " + loginCredentials.keySet());
+        System.out.println("Credentials loaded: " + loginCredentials.keySet());
     }
 
     private static int parseInt(String s) {
