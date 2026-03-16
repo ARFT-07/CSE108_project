@@ -223,13 +223,20 @@ import java.util.stream.Collectors;
 
 public class PlayerDBController implements NetworkThread.MessageListener {
 
-    @FXML private TextField        searchField;
-    @FXML private ComboBox<String> clubFilter;
-    @FXML private FlowPane         playerGrid;
-    @FXML private Label            countLabel;
-    @FXML private ToggleButton     btnAll, btnGK, btnDEF, btnMID, btnFWD;
-    @FXML private Button           backBtn;
-    @FXML private Button           marketBtn;
+    @FXML
+    private TextField searchField;
+    @FXML
+    private ComboBox<String> clubFilter;
+    @FXML
+    private FlowPane playerGrid;
+    @FXML
+    private Label countLabel;
+    @FXML
+    private ToggleButton btnAll, btnGK, btnDEF, btnMID, btnFWD;
+    @FXML
+    private Button backBtn;
+    @FXML
+    private Button marketBtn;
 
     private ToggleGroup positionGroup;
     private String currentPosition = "ALL";
@@ -290,12 +297,12 @@ public class PlayerDBController implements NetworkThread.MessageListener {
         VBox card = new VBox(8);
         card.setPrefWidth(170);
         card.setStyle("""
-            -fx-background-color: #16213e;
-            -fx-background-radius: 12;
-            -fx-padding: 12;
-            -fx-cursor: hand;
-            -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 8, 0, 0, 2);
-            """);
+                -fx-background-color: #16213e;
+                -fx-background-radius: 12;
+                -fx-padding: 12;
+                -fx-cursor: hand;
+                -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 8, 0, 0, 2);
+                """);
 
         ImageView photo = new ImageView();
         photo.setFitWidth(146);
@@ -330,19 +337,19 @@ public class PlayerDBController implements NetworkThread.MessageListener {
         card.getChildren().addAll(photo, posBadge, name, club, rating);
 
         card.setOnMouseEntered(e -> card.setStyle("""
-            -fx-background-color: #0f3460;
-            -fx-background-radius: 12;
-            -fx-padding: 12;
-            -fx-cursor: hand;
-            -fx-effect: dropshadow(gaussian, rgba(233,69,96,0.5), 14, 0, 0, 0);
-            """));
+                -fx-background-color: #0f3460;
+                -fx-background-radius: 12;
+                -fx-padding: 12;
+                -fx-cursor: hand;
+                -fx-effect: dropshadow(gaussian, rgba(233,69,96,0.5), 14, 0, 0, 0);
+                """));
         card.setOnMouseExited(e -> card.setStyle("""
-            -fx-background-color: #16213e;
-            -fx-background-radius: 12;
-            -fx-padding: 12;
-            -fx-cursor: hand;
-            -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 8, 0, 0, 2);
-            """));
+                -fx-background-color: #16213e;
+                -fx-background-radius: 12;
+                -fx-padding: 12;
+                -fx-cursor: hand;
+                -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 8, 0, 0, 2);
+                """));
 
         card.setOnMouseClicked(e -> openDetail(p));
 
@@ -353,16 +360,19 @@ public class PlayerDBController implements NetworkThread.MessageListener {
         try {
             InputStream is = getClass().getResourceAsStream("/" + p.getImagePath());
             if (is != null) return new Image(is);
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
         try {
             File f = new File(p.getImagePath());
             if (f.exists()) return new Image(f.toURI().toString());
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
         try {
             InputStream is = getClass().getResourceAsStream(
                     "/org/buet/fantasymanagerxi/images/players/placeholder.png");
             if (is != null) return new Image(is);
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
         return null;
     }
 
@@ -417,8 +427,16 @@ public class PlayerDBController implements NetworkThread.MessageListener {
                 SessionManager.setSquad(squad);
                 refreshGrid();
             }
+            case SQUAD_UPDATE -> {
+                @SuppressWarnings("unchecked")
+                List<Player> updatedSquad = (List<Player>) msg.getPayload();
+                squad = updatedSquad;
+                SessionManager.setSquad(updatedSquad);
+                refreshGrid();
+            }
 
-            default -> {}
+            default -> {
+            }
         }
     }
 

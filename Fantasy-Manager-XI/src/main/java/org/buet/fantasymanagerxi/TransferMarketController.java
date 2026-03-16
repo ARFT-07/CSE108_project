@@ -196,6 +196,11 @@ public class TransferMarketController implements NetworkThread.MessageListener {
                 MarketMessage req = new MarketMessage(MarketMessage.Type.GET_MARKET);
                 SessionManager.getNetworkThread().sendMessage(req);
             }
+            case SQUAD_UPDATE -> {
+                @SuppressWarnings("unchecked")
+                List<Player> updatedSquad = (List<Player>) msg.getPayload();
+                SessionManager.setSquad(updatedSquad);
+            }
 
             default -> {}
         }

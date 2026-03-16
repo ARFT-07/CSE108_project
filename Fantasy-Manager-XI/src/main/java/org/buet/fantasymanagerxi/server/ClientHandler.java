@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -95,7 +96,7 @@ public class ClientHandler implements Runnable {
         if (loggedInClub == null) return;
 
         String playerName = msg.getPlayerId();
-        double price = msg.getPrice();
+        double price      = msg.getPrice();
 
         List<Player> squad = clubSquads.get(loggedInClub);
         Player player = squad.stream()
@@ -110,24 +111,31 @@ public class ClientHandler implements Runnable {
             return;
         }
 
-        // Move player from squad to transfer market
+        // Move player to transfer market
         squad.remove(player);
         player.setAskingPrice(price);
         player.setOnMarket(true);
         transferMarket.addListing(player);
 
+        // Confirm to the seller
         MarketMessage response = new MarketMessage(MarketMessage.Type.SELL_OK);
         response.setPayload(player);
         sendMessage(response);
 
-        // Tell every connected club the market has changed
+        // Send updated squad back to seller so local list is in sync
+        MarketMessage squadUpdate = new MarketMessage(MarketMessage.Type.SQUAD_UPDATE);
+        squadUpdate.setPayload(new ArrayList<>(squad));
+        squadUpdate.setClubName(loggedInClub);
+        sendMessage(squadUpdate);
+
         broadcastMarketUpdate();
     }
-
     private void handleBuyPlayer(MarketMessage msg) {
         if (loggedInClub == null) return;
 
         String playerName = msg.getPlayerId();
+
+        String sellingClub = null;
 
         synchronized (transferMarket) {
             Player player = transferMarket.findById(playerName);
@@ -138,6 +146,9 @@ public class ClientHandler implements Runnable {
                 sendMessage(err);
                 return;
             }
+
+            // Remember who was selling before we change the club
+            sellingClub = player.getClub();
 
             transferMarket.removeListing(playerName);
             player.setClub(loggedInClub);
@@ -150,6 +161,11 @@ public class ClientHandler implements Runnable {
             sendMessage(response);
         }
 
+        // Tell the selling club to remove the player from their squad view
+        if (sellingClub != null) {
+            notifySquadUpdate(sellingClub);
+        }
+
         broadcastMarketUpdate();
     }
 
@@ -160,7 +176,17 @@ public class ClientHandler implements Runnable {
             handler.sendMessage(update);
         }
     }
+    private void notifySquadUpdate(String clubName) {
+        MarketMessage update = new MarketMessage(MarketMessage.Type.SQUAD_UPDATE);
+        update.setPayload(clubSquads.get(clubName));
+        update.setClubName(clubName);
 
+        for (ClientHandler handler : allHandlers) {
+            if (clubName.equals(handler.loggedInClub)) {
+                handler.sendMessage(update);
+            }
+        }
+    }
     public synchronized void sendMessage(MarketMessage msg) {
         try {
             out.writeObject(msg);
