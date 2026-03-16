@@ -33,7 +33,7 @@ public class PlayerDBController {
         //!this opens a new text file
         if (!PlayerDataManager.isLoaded()) {
             InputStream is = getClass().getResourceAsStream(
-                    "/org/buet/fantasymanagerxi/data/Arsenal.txt"
+                    "/org/buet/fantasymanagerxi/data/players_db.txt"
             );
             if (is != null) {
                 PlayerDataManager.loadFromStream(is);
