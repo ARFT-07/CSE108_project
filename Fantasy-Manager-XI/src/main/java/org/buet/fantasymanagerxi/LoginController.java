@@ -1,6 +1,5 @@
 package org.buet.fantasymanagerxi;
 
-import javafx.event.ActionEvent;
 import org.buet.fantasymanagerxi.model.MarketMessage;
 import org.buet.fantasymanagerxi.model.Player;
 import javafx.fxml.*;
@@ -14,10 +13,10 @@ import java.util.List;
 
 public class LoginController implements NetworkThread.MessageListener {
 
-    @FXML private TextField     usernameField;
-    @FXML private PasswordField passwordField;
-    @FXML private Label         errorLabel;
-    @FXML private Button        loginBtn;
+    @FXML private ComboBox<String> clubDropdown;
+    @FXML private PasswordField    passwordField;
+    @FXML private Label            errorLabel;
+    @FXML private Button           loginBtn;
 
     private NetworkThread networkThread;
 
@@ -25,28 +24,40 @@ public class LoginController implements NetworkThread.MessageListener {
     public void initialize() {
         errorLabel.setText("");
 
-        // Start the network thread and connect to server
+        // Populate dropdown with all six clubs
+        clubDropdown.getItems().addAll(
+                "CHELSEA",
+                "LIVERPOOL",
+                "ARSENAL",
+                "MANUTD",
+                "MANCITY",
+                "SPURS"
+        );
+
+        // Start network thread and connect to server
         networkThread = new NetworkThread(this);
         networkThread.start();
     }
 
     @FXML
     private void handleLogin() {
-        String club     = usernameField.getText().trim();
+        String club     = clubDropdown.getValue();
         String password = passwordField.getText().trim();
 
-        if (club.isEmpty() || password.isEmpty()) {
-            errorLabel.setText("Please enter club name and password.");
+        if (club == null) {
+            errorLabel.setText("Please select a club.");
+            return;
+        }
+        if (password.isEmpty()) {
+            errorLabel.setText("Please enter your password.");
             return;
         }
 
-        // Disable button so club can't click twice while waiting
         loginBtn.setDisable(true);
         errorLabel.setText("Connecting...");
 
-        // Build and send the LOGIN message
         MarketMessage msg = new MarketMessage(MarketMessage.Type.LOGIN);
-        msg.setClubName(club.toUpperCase());
+        msg.setClubName(club);
         msg.setPassword(password);
         networkThread.sendMessage(msg);
     }
@@ -56,16 +67,13 @@ public class LoginController implements NetworkThread.MessageListener {
         switch (msg.getType()) {
 
             case LOGIN_OK -> {
-                // Server sends back the club's squad as the payload
                 @SuppressWarnings("unchecked")
                 List<Player> squad = (List<Player>) msg.getPayload();
 
-                // Store the network thread and squad so the next screen can use them
                 SessionManager.setNetworkThread(networkThread);
-                SessionManager.setLoggedInClub(usernameField.getText().trim());
+                SessionManager.setLoggedInClub(clubDropdown.getValue());
                 SessionManager.setSquad(squad);
 
-                // Switch to the player database screen
                 try {
                     FXMLLoader loader = new FXMLLoader(
                             getClass().getResource(
@@ -75,7 +83,7 @@ public class LoginController implements NetworkThread.MessageListener {
                     Stage stage = (Stage) loginBtn.getScene().getWindow();
                     stage.setScene(new Scene(root, 1100, 720));
                     stage.setTitle("Player Database — " +
-                            SessionManager.getLoggedInClub());
+                            clubDropdown.getValue());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -91,7 +99,7 @@ public class LoginController implements NetworkThread.MessageListener {
                 loginBtn.setDisable(false);
             }
 
-            default -> {} // ignore other message types on the login screen
+            default -> {}
         }
     }
 
@@ -99,9 +107,5 @@ public class LoginController implements NetworkThread.MessageListener {
     public void onConnectionFailed(String reason) {
         errorLabel.setText(reason);
         loginBtn.setDisable(false);
-    }
-
-    public void checkValidLogin(ActionEvent actionEvent) {
-
     }
 }
