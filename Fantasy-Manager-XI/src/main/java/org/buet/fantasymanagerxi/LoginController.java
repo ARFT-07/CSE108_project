@@ -1,5 +1,6 @@
 package org.buet.fantasymanagerxi;
 
+import javafx.event.ActionEvent;
 import org.buet.fantasymanagerxi.model.MarketMessage;
 import org.buet.fantasymanagerxi.model.Player;
 import javafx.fxml.*;
@@ -45,7 +46,7 @@ public class LoginController implements NetworkThread.MessageListener {
 
         // Build and send the LOGIN message
         MarketMessage msg = new MarketMessage(MarketMessage.Type.LOGIN);
-        msg.setClubName(club);
+        msg.setClubName(club.toUpperCase());
         msg.setPassword(password);
         networkThread.sendMessage(msg);
     }
@@ -98,5 +99,9 @@ public class LoginController implements NetworkThread.MessageListener {
     public void onConnectionFailed(String reason) {
         errorLabel.setText(reason);
         loginBtn.setDisable(false);
+    }
+
+    public void checkValidLogin(ActionEvent actionEvent) {
+
     }
 }

@@ -37,6 +37,11 @@
 
                 <HBox HBox.hgrow="ALWAYS" />
                 <Label fx:id="countLabel" style="-fx-text-fill: #888; -fx-font-size: 13;" text="96 players" />
+                <Button fx:id="marketBtn" text="Transfer Market"
+                        onAction="#openMarket"
+                        style="-fx-background-color: #e94560; -fx-text-fill: white;
+               -fx-background-radius: 6; -fx-padding: 8 16;
+               -fx-cursor: hand; -fx-font-weight: bold;"/>
             </HBox>
         </VBox>
     </top>
