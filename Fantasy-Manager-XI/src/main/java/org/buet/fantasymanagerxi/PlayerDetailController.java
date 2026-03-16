@@ -1,5 +1,6 @@
 package org.buet.fantasymanagerxi;
 
+import org.buet.fantasymanagerxi.model.MarketMessage;
 import org.buet.fantasymanagerxi.model.Player;
 import javafx.fxml.*;
 import javafx.scene.Parent;
@@ -12,19 +13,27 @@ import javafx.stage.Stage;
 
 import java.io.*;
 
-public class PlayerDetailController {
+public class PlayerDetailController implements NetworkThread.MessageListener {
 
     @FXML private ImageView playerPhoto;
     @FXML private Label     playerName, playerClub, playerPosition, playerRating;
     @FXML private VBox      detailPanel;
     @FXML private Button    backBtn;
+    @FXML private Button    sellBtn;
+    @FXML private Label     statusLabel;
+
+    private Player currentPlayer;
 
     public void setPlayer(Player p) {
+        this.currentPlayer = p;
 
-        // ── Photo ─────────────────────────────────────────────────────────────
+        // Register as active listener
+        SessionManager.getNetworkThread().setListener(this);
+
+        // Photo
         loadPhoto(p);
 
-        // ── Header ────────────────────────────────────────────────────────────
+        // Header
         playerName.setText(p.getName());
         playerClub.setText(p.getClub());
         playerRating.setText("★ " + p.getRating());
@@ -35,13 +44,30 @@ public class PlayerDetailController {
                         "-fx-font-weight: bold; -fx-font-size: 13; -fx-text-fill: white;"
         );
 
-        // Clip photo to circle
         Rectangle clip = new Rectangle(220, 220);
         clip.setArcWidth(220);
         clip.setArcHeight(220);
         playerPhoto.setClip(clip);
 
-        // ── Detail rows ───────────────────────────────────────────────────────
+        // Show sell button only if player is not already on market
+        if (p.isOnMarket()) {
+            sellBtn.setText("Listed on Market");
+            sellBtn.setDisable(true);
+            sellBtn.setStyle(
+                    "-fx-background-color: #555555; -fx-text-fill: white;" +
+                            "-fx-background-radius: 6; -fx-padding: 8 20;"
+            );
+        } else {
+            sellBtn.setText("Sell Player");
+            sellBtn.setDisable(false);
+            sellBtn.setStyle(
+                    "-fx-background-color: #e94560; -fx-text-fill: white;" +
+                            "-fx-font-weight: bold; -fx-background-radius: 6; -fx-padding: 8 20;" +
+                            "-fx-cursor: hand;"
+            );
+        }
+
+        // Detail rows
         detailPanel.getChildren().clear();
         detailPanel.getChildren().addAll(
                 sectionHeader("Personal"),
@@ -68,6 +94,97 @@ public class PlayerDetailController {
                 transferBlock(p.getTransferHistory())
         );
     }
+
+    @FXML
+    private void handleSell() {
+        // Ask the club to enter a price
+        TextInputDialog dialog = new TextInputDialog(
+                String.valueOf(currentPlayer.getMarketValueM()));
+        dialog.setTitle("List Player for Sale");
+        dialog.setHeaderText("Set asking price for " + currentPlayer.getName());
+        dialog.setContentText("Asking price (£M):");
+
+        dialog.showAndWait().ifPresent(input -> {
+            try {
+                double price = Double.parseDouble(input.trim());
+
+                if (price <= 0) {
+                    showError("Price must be greater than 0.");
+                    return;
+                }
+
+                // Send SELL_PLAYER message to server
+                MarketMessage msg = new MarketMessage(MarketMessage.Type.SELL_PLAYER);
+                msg.setPlayerId(currentPlayer.getName());
+                msg.setPrice(price);
+                SessionManager.getNetworkThread().sendMessage(msg);
+
+                sellBtn.setDisable(true);
+                sellBtn.setText("Listing...");
+                if (statusLabel != null) statusLabel.setText("Sending to server...");
+
+            } catch (NumberFormatException e) {
+                showError("Please enter a valid number.");
+            }
+        });
+    }
+
+    @Override
+    public void onMessageReceived(MarketMessage msg) {
+        switch (msg.getType()) {
+
+            case SELL_OK -> {
+                Player sold = (Player) msg.getPayload();
+
+                // Update the button to show the player is listed
+                sellBtn.setText("Listed on Market");
+                sellBtn.setDisable(true);
+                sellBtn.setStyle(
+                        "-fx-background-color: #555555; -fx-text-fill: white;" +
+                                "-fx-background-radius: 6; -fx-padding: 8 20;"
+                );
+
+                if (statusLabel != null) {
+                    statusLabel.setText(sold.getName() +
+                            " listed for £" +
+                            String.format("%,.0f", sold.getAskingPrice()) + "M");
+                }
+
+                // Show confirmation to the user
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Player Listed");
+                alert.setHeaderText(null);
+                alert.setContentText(sold.getName() +
+                        " has been listed on the transfer market for £" +
+                        String.format("%,.0f", sold.getAskingPrice()) + "M.");
+                alert.showAndWait();
+            }
+
+            case ERROR -> {
+                String error = (String) msg.getPayload();
+                sellBtn.setDisable(false);
+                sellBtn.setText("Sell Player");
+                showError(error);
+            }
+
+            default -> {}
+        }
+    }
+
+    @Override
+    public void onConnectionFailed(String reason) {
+        if (statusLabel != null) statusLabel.setText("Connection lost: " + reason);
+    }
+
+    private void showError(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    // ── Helpers (unchanged from your original) ────────────────────────────────
 
     private Label sectionHeader(String title) {
         Label lbl = new Label(title.toUpperCase());
@@ -116,7 +233,8 @@ public class PlayerDetailController {
 
             HBox row = new HBox(8);
             Label arrow = new Label(loan ? "↗" : "→");
-            arrow.setStyle("-fx-text-fill: " + (loan ? "#F39C12" : "#2ECC71") + "; -fx-font-size: 14;");
+            arrow.setStyle("-fx-text-fill: " +
+                    (loan ? "#F39C12" : "#2ECC71") + "; -fx-font-size: 14;");
             Label info = new Label(year + "  —  " + club + (loan ? "  (Loan)" : ""));
             info.setStyle("-fx-text-fill: #cccccc; -fx-font-size: 13;");
             row.getChildren().addAll(arrow, info);
@@ -127,28 +245,23 @@ public class PlayerDetailController {
 
     private void loadPhoto(Player p) {
         Image img = null;
-
         try {
             InputStream is = getClass().getResourceAsStream("/" + p.getImagePath());
             if (is != null) img = new Image(is);
         } catch (Exception ignored) {}
-
         if (img == null) {
             try {
                 File f = new File(p.getImagePath());
                 if (f.exists()) img = new Image(f.toURI().toString());
             } catch (Exception ignored) {}
         }
-
         if (img == null) {
             try {
                 InputStream is = getClass().getResourceAsStream(
-                        "/org/buet/fantasymanagerxi/images/players/placeholder.png"
-                );
+                        "/org/buet/fantasymanagerxi/images/players/placeholder.png");
                 if (is != null) img = new Image(is);
             } catch (Exception ignored) {}
         }
-
         if (img != null) playerPhoto.setImage(img);
     }
 
@@ -156,11 +269,12 @@ public class PlayerDetailController {
     private void goBack() {
         try {
             Parent root = FXMLLoader.load(
-                    getClass().getResource("/org/buet/fantasymanagerxi/fxml/player-db.fxml")
+                    getClass().getResource(
+                            "/org/buet/fantasymanagerxi/fxml/player-db.fxml")
             );
             Stage stage = (Stage) backBtn.getScene().getWindow();
             stage.setScene(new Scene(root, 1100, 720));
-            stage.setTitle("Player Database");
+            stage.setTitle("Player Database — " + SessionManager.getLoggedInClub());
         } catch (IOException e) {
             e.printStackTrace();
         }
