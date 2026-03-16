@@ -49,6 +49,9 @@
                 <Label fx:id="playerRating"
                        style="-fx-text-fill: #F1C40F; -fx-font-size: 22;
                               -fx-font-weight: bold;"/>
+                <Button fx:id="sellBtn" onAction="#handleSell"/>
+                <Label fx:id="statusLabel"
+                       style="-fx-text-fill: #aaaaaa; -fx-font-size: 12;"/>
             </VBox>
 
             <!-- RIGHT: Full details -->

@@ -1,78 +1,190 @@
 package org.buet.fantasymanagerxi.model;
 
-public class Player {
+import java.io.Serial;
+import java.io.Serializable;
+
+public class Player implements Serializable {
     private String name, club, position, nationality, dob, foot, contractEnd;
     private int shirtNo, heightCm, weightKg, goals, assists, appearances;
     private double wagePw, marketValueM, rating;
     private String transferHistory;
     private String imagePath; // e.g. "images/players/salah.png"
+    private double askingPrice = 0.0;
+    private boolean onMarket = false;
 
     // ── Constructors ──────────────────────────────────────────
-    public Player() {}
+    public Player() {
+    }
 
     // ── Getters & Setters ─────────────────────────────────────
-    public String getName()            { return name; }
-    public void   setName(String v)    { this.name = v; }
+    public String getName() {
+        return name;
+    }
 
-    public String getClub()            { return club; }
-    public void   setClub(String v)    { this.club = v; }
+    public void setName(String v) {
+        this.name = v;
+    }
 
-    public String getPosition()        { return position; }
-    public void   setPosition(String v){ this.position = v; }
+    public String getClub() {
+        return club;
+    }
 
-    public String getNationality()     { return nationality; }
-    public void   setNationality(String v){ this.nationality = v; }
+    public void setClub(String v) {
+        this.club = v;
+    }
 
-    public String getDob()             { return dob; }
-    public void   setDob(String v)     { this.dob = v; }
+    public String getPosition() {
+        return position;
+    }
 
-    public String getFoot()            { return foot; }
-    public void   setFoot(String v)    { this.foot = v; }
+    public void setPosition(String v) {
+        this.position = v;
+    }
 
-    public String getContractEnd()     { return contractEnd; }
-    public void   setContractEnd(String v){ this.contractEnd = v; }
+    public String getNationality() {
+        return nationality;
+    }
 
-    public int    getShirtNo()         { return shirtNo; }
-    public void   setShirtNo(int v)    { this.shirtNo = v; }
+    public void setNationality(String v) {
+        this.nationality = v;
+    }
 
-    public int    getHeightCm()        { return heightCm; }
-    public void   setHeightCm(int v)   { this.heightCm = v; }
+    public String getDob() {
+        return dob;
+    }
 
-    public int    getWeightKg()        { return weightKg; }
-    public void   setWeightKg(int v)   { this.weightKg = v; }
+    public void setDob(String v) {
+        this.dob = v;
+    }
 
-    public int    getGoals()           { return goals; }
-    public void   setGoals(int v)      { this.goals = v; }
+    public String getFoot() {
+        return foot;
+    }
 
-    public int    getAssists()         { return assists; }
-    public void   setAssists(int v)    { this.assists = v; }
+    public void setFoot(String v) {
+        this.foot = v;
+    }
 
-    public int    getAppearances()     { return appearances; }
-    public void   setAppearances(int v){ this.appearances = v; }
+    public String getContractEnd() {
+        return contractEnd;
+    }
 
-    public double getWagePw()          { return wagePw; }
-    public void   setWagePw(double v)  { this.wagePw = v; }
+    public void setContractEnd(String v) {
+        this.contractEnd = v;
+    }
 
-    public double getMarketValueM()    { return marketValueM; }
-    public void   setMarketValueM(double v){ this.marketValueM = v; }
+    public int getShirtNo() {
+        return shirtNo;
+    }
 
-    public double getRating()          { return rating; }
-    public void   setRating(double v)  { this.rating = v; }
+    public void setShirtNo(int v) {
+        this.shirtNo = v;
+    }
 
-    public String getTransferHistory() { return transferHistory; }
-    public void   setTransferHistory(String v){ this.transferHistory = v; }
+    public int getHeightCm() {
+        return heightCm;
+    }
 
-    public String getImagePath()       { return imagePath; }
-    public void   setImagePath(String v){ this.imagePath = v; }
+    public void setHeightCm(int v) {
+        this.heightCm = v;
+    }
+
+    public int getWeightKg() {
+        return weightKg;
+    }
+
+    public void setWeightKg(int v) {
+        this.weightKg = v;
+    }
+
+    public int getGoals() {
+        return goals;
+    }
+
+    public void setGoals(int v) {
+        this.goals = v;
+    }
+
+    public int getAssists() {
+        return assists;
+    }
+
+    public void setAssists(int v) {
+        this.assists = v;
+    }
+
+    public int getAppearances() {
+        return appearances;
+    }
+
+    public void setAppearances(int v) {
+        this.appearances = v;
+    }
+
+    public double getWagePw() {
+        return wagePw;
+    }
+
+    public void setWagePw(double v) {
+        this.wagePw = v;
+    }
+
+    public double getMarketValueM() {
+        return marketValueM;
+    }
+
+    public void setMarketValueM(double v) {
+        this.marketValueM = v;
+    }
+
+    public double getRating() {
+        return rating;
+    }
+
+    public void setRating(double v) {
+        this.rating = v;
+    }
+
+    public String getTransferHistory() {
+        return transferHistory;
+    }
+
+    public void setTransferHistory(String v) {
+        this.transferHistory = v;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String v) {
+        this.imagePath = v;
+    }
+
+    public double getAskingPrice() {
+        return askingPrice;
+    }
+
+    public void setAskingPrice(double askingPrice) {
+        this.askingPrice = askingPrice;
+    }
+
+    public boolean isOnMarket() {
+        return onMarket;
+    }
+
+    public void setOnMarket(boolean onMarket) {
+        this.onMarket = onMarket;
+    }
 
     // Display helper for position badge color
     public String getPositionColor() {
         return switch (position) {
-            case "GK"  -> "#F39C12";
+            case "GK" -> "#F39C12";
             case "DEF" -> "#2980B9";
             case "MID" -> "#27AE60";
             case "FWD" -> "#E74C3C";
-            default    -> "#7F8C8D";
+            default -> "#7F8C8D";
         };
     }
 }
