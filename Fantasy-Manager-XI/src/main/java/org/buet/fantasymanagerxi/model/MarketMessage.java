@@ -3,7 +3,6 @@ package org.buet.fantasymanagerxi.model;
 import java.io.Serializable;
 
 public class MarketMessage implements Serializable {
-
     public enum Type {
         // Client → Server
         LOGIN,
@@ -17,6 +16,7 @@ public class MarketMessage implements Serializable {
         SELL_OK,
         BUY_OK,
         MARKET_UPDATE,
+        SQUAD_UPDATE,   // ← add this
         ERROR
     }
 

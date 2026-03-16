@@ -12,6 +12,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 import java.io.*;
+import java.util.List;
 
 public class PlayerDetailController implements NetworkThread.MessageListener {
 
@@ -135,8 +136,9 @@ public class PlayerDetailController implements NetworkThread.MessageListener {
 
             case SELL_OK -> {
                 Player sold = (Player) msg.getPayload();
+                currentPlayer.setOnMarket(true);
+                currentPlayer.setAskingPrice(sold.getAskingPrice());
 
-                // Update the button to show the player is listed
                 sellBtn.setText("Listed on Market");
                 sellBtn.setDisable(true);
                 sellBtn.setStyle(
@@ -150,7 +152,6 @@ public class PlayerDetailController implements NetworkThread.MessageListener {
                             String.format("%,.0f", sold.getAskingPrice()) + "M");
                 }
 
-                // Show confirmation to the user
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Player Listed");
                 alert.setHeaderText(null);
@@ -158,6 +159,33 @@ public class PlayerDetailController implements NetworkThread.MessageListener {
                         " has been listed on the transfer market for £" +
                         String.format("%,.0f", sold.getAskingPrice()) + "M.");
                 alert.showAndWait();
+            }
+
+            // Handle squad update — update the session squad
+            case SQUAD_UPDATE -> {
+                @SuppressWarnings("unchecked")
+                List<Player> updatedSquad = (List<Player>) msg.getPayload();
+                SessionManager.setSquad(updatedSquad);
+
+                // Check if current player is still in squad
+                boolean stillInSquad = updatedSquad.stream()
+                        .anyMatch(p -> p.getName().equals(currentPlayer.getName()));
+
+                if (!stillInSquad) {
+                    // Player was bought by another club — go back to squad view
+                    try {
+                        Parent root = FXMLLoader.load(
+                                getClass().getResource(
+                                        "/org/buet/fantasymanagerxi/fxml/player-db.fxml")
+                        );
+                        Stage stage = (Stage) backBtn.getScene().getWindow();
+                        stage.setScene(new Scene(root, 1100, 720));
+                        stage.setTitle("Player Database — " +
+                                SessionManager.getLoggedInClub());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
 
             case ERROR -> {
