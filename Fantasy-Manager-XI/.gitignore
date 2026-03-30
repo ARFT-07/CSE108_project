@@ -16,3 +16,8 @@ out/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Credentials and data files
+ValidAccountinfo.txt
+ValidLoginInfo.txt
+*.dat
