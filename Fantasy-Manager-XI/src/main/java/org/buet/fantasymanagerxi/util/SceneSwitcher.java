@@ -5,24 +5,50 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import java.io.IOException;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 
 public class SceneSwitcher {
+
     public static void switchScene(String fxml, ActionEvent event, double width, double height) {
         try {
+            // 1. Load the FXML
             FXMLLoader loader = new FXMLLoader(
                     SceneSwitcher.class.getResource("/org/buet/fantasymanagerxi/fxml/" + fxml)
             );
             Parent root = loader.load();
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
-            // This version allows each screen to define its own size!
+            // 2. Get the Stage
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setTitle("Fantasy League XI");
+
+            // 3. Create the Scene with dynamic dimensions
             Scene scene = new Scene(root, width, height);
+
+            // 4. Add the Stylesheet (if it exists)
+            try {
+                scene.getStylesheets().add(
+                        SceneSwitcher.class.getResource("/org/buet/fantasymanagerxi/css/homepage-style.css").toExternalForm()
+                );
+            } catch (Exception e) {
+                System.out.println("CSS not found, skipping...");
+            }
+
+            // 5. Add the Logo
+            try {
+                Image img = new Image(
+                        SceneSwitcher.class.getResourceAsStream("/org/buet/fantasymanagerxi/images/logo.png")
+                );
+                stage.getIcons().add(img);
+            } catch (Exception e) {
+                System.out.println("Logo not found, skipping...");
+            }
+
+            // 6. Show the Stage
             stage.setScene(scene);
             stage.show();
+
         } catch (IOException e) {
             e.printStackTrace();
         }

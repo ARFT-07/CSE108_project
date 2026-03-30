@@ -1,71 +1,111 @@
 package org.buet.fantasymanagerxi;
 
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
+import org.buet.fantasymanagerxi.model.MarketMessage;
+import org.buet.fantasymanagerxi.model.Player;
+import javafx.fxml.*;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
-import org.w3c.dom.Text;
 
-import java.io.FileNotFoundException;
-import java.util.Scanner;
-import java.io.File;
 import java.io.IOException;
-import java.util.Objects;
-import java.util.Scanner;
+import java.util.List;
 
+public class LoginController implements NetworkThread.MessageListener {
 
-public class LoginController {
+    @FXML private ComboBox<String> clubDropdown;
+    @FXML private PasswordField    passwordField;
+    @FXML private Label            errorLabel;
+    @FXML private Button           loginBtn;
+
+    private NetworkThread networkThread;
+
     @FXML
-//    TextField name;
-//    TextField pass;
+    public void initialize() {
+        errorLabel.setText("");
 
-    public boolean checkMatchingPairs(String name, String pass) {
+        // Populate dropdown with all six clubs
+        clubDropdown.getItems().addAll(
+                "CHELSEA",
+                "LIVERPOOL",
+                "ARSENAL",
+                "MANUTD",
+                "MANCITY",
+                "SPURS"
+        );
 
-        try (Scanner scanner = new Scanner(
-                getClass().getResourceAsStream(
-                        "/org/buet/fantasymanagerxi/data/ValidLoginInfo.txt"
-                )
-        )) {
+        // Start network thread and connect to server
+        networkThread = new NetworkThread(this);
+        networkThread.start();
+    }
 
+    @FXML
+    private void handleLogin() {
+        String club     = clubDropdown.getValue();
+        String password = passwordField.getText().trim();
 
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-                String[] parts = line.split(" ");
-                String firstpart = parts[0];
-                String secondpart = parts[1];
+        if (club == null) {
+            errorLabel.setText("Please select a club.");
+            return;
+        }
+        if (password.isEmpty()) {
+            errorLabel.setText("Please enter your password.");
+            return;
+        }
 
-                if (firstpart.equals(name) && secondpart.equals(pass)) {
-                    return true;
+        loginBtn.setDisable(true);
+        errorLabel.setText("Connecting...");
+
+        MarketMessage msg = new MarketMessage(MarketMessage.Type.LOGIN);
+        msg.setClubName(club);
+        msg.setPassword(password);
+        networkThread.sendMessage(msg);
+    }
+
+    @Override
+    public void onMessageReceived(MarketMessage msg) {
+        switch (msg.getType()) {
+
+            case LOGIN_OK -> {
+                @SuppressWarnings("unchecked")
+                List<Player> squad = (List<Player>) msg.getPayload();
+
+                SessionManager.setNetworkThread(networkThread);
+                SessionManager.setLoggedInClub(clubDropdown.getValue());
+                SessionManager.setSquad(squad);
+
+                try {
+                    FXMLLoader loader = new FXMLLoader(
+                            getClass().getResource(
+                                    "/org/buet/fantasymanagerxi/fxml/player-db.fxml")
+                    );
+                    Parent root = loader.load();
+                    Stage stage = (Stage) loginBtn.getScene().getWindow();
+                    stage.setScene(new Scene(root, 1100, 720));
+                    stage.setTitle("Player Database — " +
+                            clubDropdown.getValue());
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            case LOGIN_FAIL -> {
+                errorLabel.setText((String) msg.getPayload());
+                loginBtn.setDisable(false);
+            }
 
-        return false;
+            case ERROR -> {
+                errorLabel.setText("Server error. Please try again.");
+                loginBtn.setDisable(false);
+            }
+
+            default -> {}
+        }
     }
 
-    public void checkValidLogin(ActionEvent actionEvent) throws IOException {
-        String input1 = ((TextField) ((Node) actionEvent.getSource()).getScene().lookup("#name")).getText();
-        String input2 = ((TextField) ((Node) actionEvent.getSource()).getScene().lookup("#pass")).getText();
-        // String input2 = pass.getText();
-        if (!Objects.equals(input1, "") && !Objects.equals(input2, "")) {
-            if (checkMatchingPairs(input1, input2)) {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/buet/fantasymanagerxi/fxml/hello-view.fxml"));
-                Parent root = loader.load();
-                Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-                stage.setScene(new Scene(root));
-                stage.show();
-            } else {
-                throw new IOException("Invalid Login");
-            }
-        } else {
-            throw new IOException("Please Fillup the Necessary Information");
-        }
+    @Override
+    public void onConnectionFailed(String reason) {
+        errorLabel.setText(reason);
+        loginBtn.setDisable(false);
     }
 }

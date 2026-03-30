@@ -13,7 +13,7 @@ public class PreHomeController {
 
     @FXML
     private void movetoHomePage(ActionEvent event) {
-        SceneSwitcher.switchScene("homepage-view.fxml", event);
+        SceneSwitcher.switchScene("homepage-view.fxml", event,1200,800);
     }
     public void movetoTransferPage(ActionEvent actionEvent) {
     }
