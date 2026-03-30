@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane
+        xmlns="http://javafx.com/javafx"
+        xmlns:fx="http://javafx.com/fxml"
+        fx:controller="org.buet.fantasymanagerxi.MyTeamController"
+        prefWidth="1280" prefHeight="800"
+        style="-fx-background-color: #2d0050;">
+
+    <!-- TOP BAR -->
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="16"
+              style="-fx-background-color: #1a0030; -fx-border-color: transparent transparent #c8a84b transparent; -fx-border-width: 0 0 2 0;">
+            <padding><Insets top="10" right="24" bottom="10" left="24"/></padding>
+
+            <Label text="MY TEAM"
+                   style="-fx-text-fill: #c8a84b; -fx-font-size: 20px; -fx-font-weight: bold;"/>
+
+            <HBox HBox.hgrow="ALWAYS"/>
+
+            <Label text="PLAYING AS"
+                   style="-fx-text-fill: #c8a84b; -fx-font-size: 11px; -fx-font-weight: bold;"/>
+            <ComboBox fx:id="clubCombo" prefWidth="200" onAction="#onClubChanged"
+                      style="-fx-background-color: #3a0060; -fx-border-color: #c8a84b; -fx-border-radius: 4;"/>
+
+            <HBox HBox.hgrow="ALWAYS"/>
+
+            <Label text="FORMATION"
+                   style="-fx-text-fill: #c8a84b; -fx-font-size: 11px; -fx-font-weight: bold;"/>
+            <ComboBox fx:id="formationCombo" prefWidth="120" onAction="#onFormationChanged"
+                      style="-fx-background-color: #3a0060; -fx-border-color: #c8a84b; -fx-border-radius: 4;"/>
+        </HBox>
+    </top>
+
+    <!-- LEFT: Manager Card -->
+    <left>
+        <VBox spacing="10" alignment="TOP_CENTER" prefWidth="190"
+              style="-fx-background-color: #1a0030; -fx-border-color: transparent #c8a84b transparent transparent; -fx-border-width: 0 1 0 0;">
+            <padding><Insets top="20" right="14" bottom="20" left="14"/></padding>
+
+            <ImageView fx:id="managerPhoto" fitWidth="110" fitHeight="110" preserveRatio="true"/>
+
+            <Label fx:id="managerNameLabel" text="Manager"
+                   style="-fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold;"
+                   wrapText="true" alignment="CENTER"/>
+            <Label fx:id="managerClubLabel" text="Club"
+                   style="-fx-text-fill: #c8a84b; -fx-font-size: 12px; -fx-font-weight: bold;"/>
+
+            <HBox spacing="4" alignment="CENTER">
+                <Label fx:id="managerNatLabel" text="—" style="-fx-text-fill: #bbbbbb; -fx-font-size: 11px;"/>
+                <Label text="·"                          style="-fx-text-fill: #bbbbbb; -fx-font-size: 11px;"/>
+                <Label fx:id="managerAgeLabel" text="—" style="-fx-text-fill: #bbbbbb; -fx-font-size: 11px;"/>
+            </HBox>
+
+            <Label fx:id="managerSinceLabel" text="—"
+                   style="-fx-text-fill: #bbbbbb; -fx-font-size: 11px; -fx-font-style: italic;"/>
+
+            <Pane prefHeight="1" maxWidth="Infinity"
+                  style="-fx-background-color: #4a0070;"/>
+
+            <Label text="BUDGET"
+                   style="-fx-text-fill: #c8a84b; -fx-font-size: 10px; -fx-font-weight: bold;"/>
+            <Label fx:id="budgetLabel" text="£100,000,000"
+                   style="-fx-text-fill: #2ecc71; -fx-font-size: 14px; -fx-font-weight: bold;"/>
+
+            <Pane prefHeight="1" maxWidth="Infinity"
+                  style="-fx-background-color: #4a0070;"/>
+
+            <Label text="TROPHIES"
+                   style="-fx-text-fill: #c8a84b; -fx-font-size: 10px; -fx-font-weight: bold;"/>
+            <Label fx:id="trophiesLabel" text="—"
+                   style="-fx-text-fill: #c8a84b; -fx-font-size: 11px;"
+                   wrapText="true" alignment="CENTER"/>
+        </VBox>
+    </left>
+
+    <!-- CENTER: Pitch -->
+    <center>
+        <VBox alignment="CENTER"
+              style="-fx-background-color: #2d0050;"
+              VBox.vgrow="ALWAYS">
+            <padding><Insets top="10" right="16" bottom="10" left="16"/></padding>
+
+            <!-- StackPane: pitch image behind, rows on top -->
+            <StackPane fx:id="pitchStack"
+                       prefWidth="700" prefHeight="660"
+                       maxWidth="700" maxHeight="660">
+
+                <ImageView fx:id="pitchImageView"
+                           fitWidth="700" fitHeight="660"
+                           preserveRatio="false"/>
+
+                <VBox fx:id="pitchRows"
+                      prefWidth="700" prefHeight="660"
+                      alignment="CENTER" spacing="0">
+                    <HBox fx:id="attackRow"   alignment="CENTER" prefHeight="165" prefWidth="700"/>
+                    <HBox fx:id="midfieldRow" alignment="CENTER" prefHeight="165" prefWidth="700"/>
+                    <HBox fx:id="defenceRow"  alignment="CENTER" prefHeight="165" prefWidth="700"/>
+                    <HBox fx:id="gkRow"       alignment="CENTER" prefHeight="165" prefWidth="700"/>
+                </VBox>
+
+            </StackPane>
+        </VBox>
+    </center>
+
+    <!-- RIGHT: Subs + Buttons -->
+    <right>
+        <VBox spacing="10" prefWidth="200"
+              style="-fx-background-color: #1a0030; -fx-border-color: transparent transparent transparent #c8a84b; -fx-border-width: 0 0 0 1;">
+            <padding><Insets top="16" right="14" bottom="16" left="14"/></padding>
+
+            <Label text="SUBSTITUTES"
+                   style="-fx-text-fill: #c8a84b; -fx-font-size: 10px; -fx-font-weight: bold;"/>
+
+            <ListView fx:id="subsListView" VBox.vgrow="ALWAYS"
+                      style="-fx-background-color: #2d0050; -fx-border-color: #4a0070; -fx-border-radius: 6; -fx-background-radius: 6;"/>
+
+            <Pane prefHeight="1" maxWidth="Infinity"
+                  style="-fx-background-color: #4a0070;"/>
+
+            <Button text="All Players" maxWidth="Infinity" onAction="#goToAllPlayers"
+                    style="-fx-background-color: #3a0060; -fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 6; -fx-cursor: hand; -fx-padding: 10 0; -fx-border-color: #c8a84b; -fx-border-radius: 6; -fx-border-width: 1;"/>
+
+            <Button text="Transfer Market" maxWidth="Infinity" onAction="#goToTransferMarket"
+                    style="-fx-background-color: #c8a84b; -fx-text-fill: #1a0030; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 6; -fx-cursor: hand; -fx-padding: 10 0;"/>
+        </VBox>
+    </right>
+
+</BorderPane>

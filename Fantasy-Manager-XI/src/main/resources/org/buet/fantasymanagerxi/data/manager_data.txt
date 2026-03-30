@@ -1,0 +1,59 @@
+===MANAGER:Manchester City===
+NAME: Pep Guardiola
+AGE: 53
+NATIONALITY: Spanish
+IMAGE: org/buet/fantasymanagerxi/images/managers/pep_guardiola.png
+BUDGET: 150000000
+TROPHIES: Premier League x6, Champions League x1, FA Cup x2
+SINCE: 2016
+---
+
+===MANAGER:Arsenal===
+NAME: Mikel Arteta
+AGE: 42
+NATIONALITY: Spanish
+IMAGE: org/buet/fantasymanagerxi/images/managers/mikel_arteta.png
+BUDGET: 120000000
+TROPHIES: FA Cup x1
+SINCE: 2019
+---
+
+===MANAGER:Liverpool===
+NAME: Arne Slot
+AGE: 45
+NATIONALITY: Dutch
+IMAGE: org/buet/fantasymanagerxi/images/managers/arne_slot.png
+BUDGET: 130000000
+TROPHIES: Premier League x1
+SINCE: 2024
+---
+
+===MANAGER:Chelsea===
+NAME: Enzo Maresca
+AGE: 44
+NATIONALITY: Italian
+IMAGE: org/buet/fantasymanagerxi/images/managers/enzo_maresca.png
+BUDGET: 200000000
+TROPHIES: Championship x1
+SINCE: 2024
+---
+
+===MANAGER:Manchester United===
+NAME: Ruben Amorim
+AGE: 39
+NATIONALITY: Portuguese
+IMAGE: org/buet/fantasymanagerxi/images/managers/ruben_amorim.png
+BUDGET: 100000000
+TROPHIES: Primeira Liga x2
+SINCE: 2024
+---
+
+===MANAGER:Tottenham Hotspur===
+NAME: Ange Postecoglou
+AGE: 59
+NATIONALITY: Australian
+IMAGE: org/buet/fantasymanagerxi/images/managers/ange_postecoglou.png
+BUDGET: 110000000
+TROPHIES: Scottish Premiership x2, A-League x1
+SINCE: 2023
+---
