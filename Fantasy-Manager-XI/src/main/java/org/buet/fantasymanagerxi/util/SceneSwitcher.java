@@ -5,8 +5,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import throw java.io.IOException;
+import java.io.IOException;
 import javafx.stage.Stage;
+
+import java.io.IOException;
 
 public class SceneSwitcher {
     public static void switchScene(String fxml, ActionEvent event, double width, double height) {
