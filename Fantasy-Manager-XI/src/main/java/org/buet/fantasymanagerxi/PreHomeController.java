@@ -8,7 +8,9 @@ public class PreHomeController {
     public void movetoplayerDb(ActionEvent actionEvent) {
     }
 
-    public void movetoMyPlayers(ActionEvent actionEvent) {
+    @FXML
+    private void movetoMyPlayers(ActionEvent event) {
+        SceneSwitcher.switchScene("my-team.fxml", event, 1100, 720);
     }
 
     @FXML
