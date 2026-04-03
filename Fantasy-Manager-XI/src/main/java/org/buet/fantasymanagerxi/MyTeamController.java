@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -22,7 +23,9 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import org.buet.fantasymanagerxi.model.Player;
+import org.buet.fantasymanagerxi.util.SceneSwitcher;
 
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
@@ -71,29 +74,43 @@ public class MyTeamController {
     // ══════════════════════════════════════════════════════════════════════════
     //  FXML NODES
     // ══════════════════════════════════════════════════════════════════════════
-    @FXML private Pane   pitchPane;
-    @FXML private VBox   subsPanel;
-    @FXML private HBox   formationBar;
-    @FXML private Label  clubLabel;
-    @FXML private Label  statusLabel;
-    @FXML private Label  budgetValueLabel;
+    @FXML
+    private Pane pitchPane;
+    @FXML
+    private VBox subsPanel;
+    @FXML
+    private HBox formationBar;
+    @FXML
+    private Label clubLabel;
+    @FXML
+    private Label statusLabel;
+    @FXML
+    private Label budgetValueLabel;
+    @FXML
+    private Button backbtn;
+    @FXML
+    private Button marketBtn;
 
     // ══════════════════════════════════════════════════════════════════════════
     //  STATE
     // ══════════════════════════════════════════════════════════════════════════
-    private String currentFormation  = "4-3-3";
-    private final List<Player>     startingXI  = new ArrayList<>();
-    private final List<Player>     substitutes = new ArrayList<>();
-    private Player  selectedPlayer   = null;
+    private String currentFormation = "4-3-3";
+    private final List<Player> startingXI = new ArrayList<>();
+    private final List<Player> substitutes = new ArrayList<>();
+    private Player selectedPlayer = null;
     private boolean selectedFromPitch = false;
 
-    private final List<StackPane> pitchSlots  = new ArrayList<>();
-    private final List<HBox>      benchCards  = new ArrayList<>();
+    private final List<StackPane> pitchSlots = new ArrayList<>();
+    private final List<HBox> benchCards = new ArrayList<>();
 
-    /** Cached card background image (bg_card.png). */
+    /**
+     * Cached card background image (bg_card.png).
+     */
     private Image cardBgImage = null;
-    /** Cached football field image. */
-    private Image fieldImage  = null;
+    /**
+     * Cached football field image.
+     */
+    private Image fieldImage = null;
 
     // ══════════════════════════════════════════════════════════════════════════
     //  INITIALISE
@@ -102,7 +119,7 @@ public class MyTeamController {
     public void initialize() {
         // Pre-load card background
         cardBgImage = loadResource("/org/buet/fantasymanagerxi/images/bg_card.png");
-        fieldImage  = loadResource("/org/buet/fantasymanagerxi/images/football_field.png");
+        fieldImage = loadResource("/org/buet/fantasymanagerxi/images/football_field.png");
 
         // Set pitch background programmatically so we can fall back gracefully
         if (fieldImage != null) {
@@ -144,17 +161,17 @@ public class MyTeamController {
 
         for (int i = 0; i < sorted.size(); i++) {
             if (i < totalSlots) startingXI.add(sorted.get(i));
-            else                substitutes.add(sorted.get(i));
+            else substitutes.add(sorted.get(i));
         }
     }
 
     private static int positionOrder(Player p) {
         return switch (p.getPosition()) {
-            case "GK"  -> 0;
+            case "GK" -> 0;
             case "DEF" -> 1;
             case "MID" -> 2;
             case "FWD" -> 3;
-            default    -> 4;
+            default -> 4;
         };
     }
 
@@ -179,32 +196,32 @@ public class MyTeamController {
     private void styleFormationBtn(Button btn, boolean active) {
         if (active) {
             btn.setStyle("""
-                -fx-background-color: linear-gradient(to bottom, #c9a84c, #a0722a);
-                -fx-text-fill: #0d1b2a;
-                -fx-background-radius: 20;
-                -fx-padding: 5 16;
-                -fx-font-size: 11;
-                -fx-font-weight: bold;
-                -fx-cursor: hand;
-                -fx-effect: dropshadow(gaussian, rgba(201,168,76,0.6), 8, 0, 0, 2);
-            """);
+                        -fx-background-color: linear-gradient(to bottom, #c9a84c, #a0722a);
+                        -fx-text-fill: #0d1b2a;
+                        -fx-background-radius: 20;
+                        -fx-padding: 5 16;
+                        -fx-font-size: 11;
+                        -fx-font-weight: bold;
+                        -fx-cursor: hand;
+                        -fx-effect: dropshadow(gaussian, rgba(201,168,76,0.6), 8, 0, 0, 2);
+                    """);
         } else {
             btn.setStyle("""
-                -fx-background-color: rgba(201,168,76,0.08);
-                -fx-text-fill: #c9a84c;
-                -fx-border-color: rgba(201,168,76,0.4);
-                -fx-border-radius: 20;
-                -fx-background-radius: 20;
-                -fx-padding: 5 16;
-                -fx-font-size: 11;
-                -fx-cursor: hand;
-            """);
+                        -fx-background-color: rgba(201,168,76,0.08);
+                        -fx-text-fill: #c9a84c;
+                        -fx-border-color: rgba(201,168,76,0.4);
+                        -fx-border-radius: 20;
+                        -fx-background-radius: 20;
+                        -fx-padding: 5 16;
+                        -fx-font-size: 11;
+                        -fx-cursor: hand;
+                    """);
         }
     }
 
     private void switchFormation(String name) {
         currentFormation = name;
-        selectedPlayer   = null;
+        selectedPlayer = null;
         buildFormationButtons();
         distributeSquad();
         renderPitch();
@@ -238,7 +255,7 @@ public class MyTeamController {
                 String posLabel = cols.get(c);
 
                 Player p = slotIndex < startingXI.size() ? startingXI.get(slotIndex) : null;
-                final int   finalSlot   = slotIndex;
+                final int finalSlot = slotIndex;
                 final Player finalPlayer = p;
 
                 // Card is 80×106 — centre it on the slot coordinate
@@ -257,12 +274,13 @@ public class MyTeamController {
     // ══════════════════════════════════════════════════════════════════════════
     //  FIFA-STYLE CARD BUILDER  (uses bg_card.png as background)
     // ══════════════════════════════════════════════════════════════════════════
+
     /**
      * Builds an 80×106 card that mimics the FIFA Ultimate Team gold card style.
      *
-     * @param p          Player data (may be null for empty slots).
-     * @param posLabel   Position label shown on the card (e.g. "ST", "CB").
-     * @param selected   Whether to render the selected / highlighted state.
+     * @param p        Player data (may be null for empty slots).
+     * @param posLabel Position label shown on the card (e.g. "ST", "CB").
+     * @param selected Whether to render the selected / highlighted state.
      */
     private StackPane buildFifaCard(Player p, String posLabel, boolean selected) {
         // ── Root container ─────────────────────────────────────────────────
@@ -286,9 +304,9 @@ public class MyTeamController {
         } else {
             // CSS fallback
             cardBg.setStyle("""
-                -fx-background-color: linear-gradient(to bottom, #d4a820, #8b6914);
-                -fx-background-radius: 8;
-            """);
+                        -fx-background-color: linear-gradient(to bottom, #d4a820, #8b6914);
+                        -fx-background-radius: 8;
+                    """);
         }
 
         // ── Selection glow overlay ─────────────────────────────────────────
@@ -309,7 +327,7 @@ public class MyTeamController {
         VBox topLeft = new VBox(0);
         topLeft.setAlignment(Pos.TOP_LEFT);
 
-        Label ratingLbl = new Label(p != null ? String.valueOf((int)p.getRating()) : "—");
+        Label ratingLbl = new Label(p != null ? String.valueOf((int) p.getRating()) : "—");
         ratingLbl.setStyle("-fx-text-fill:#1a1200; -fx-font-size:13; -fx-font-weight:bold;");
         Label posTopLbl = new Label(p != null ? p.getPosition() : posLabel);
         posTopLbl.setStyle("-fx-text-fill:#2a1a00; -fx-font-size:7; -fx-font-weight:bold;");
@@ -339,12 +357,12 @@ public class MyTeamController {
             circle.setPrefSize(42, 42);
             circle.setMaxSize(42, 42);
             circle.setStyle("""
-                -fx-background-color: rgba(0,0,0,0.30);
-                -fx-background-radius: 21;
-                -fx-border-color: rgba(201,168,76,0.6);
-                -fx-border-radius: 21;
-                -fx-border-width: 1;
-            """);
+                        -fx-background-color: rgba(0,0,0,0.30);
+                        -fx-background-radius: 21;
+                        -fx-border-color: rgba(201,168,76,0.6);
+                        -fx-border-radius: 21;
+                        -fx-border-width: 1;
+                    """);
             Text initText = new Text(p != null ? initials(p.getName()) : "?");
             initText.setFill(Color.web("#c9a84c"));
             initText.setStyle("-fx-font-size:13; -fx-font-weight:bold;");
@@ -384,17 +402,19 @@ public class MyTeamController {
         return root;
     }
 
-    /** Returns a tiny 2-column stats HBox (PAC/SHO or DEF/PAS). */
+    /**
+     * Returns a tiny 2-column stats HBox (PAC/SHO or DEF/PAS).
+     */
     private HBox buildMiniStats(Player p) {
         HBox row = new HBox(4);
         row.setAlignment(Pos.CENTER);
 
         String[][] attrs;
         switch (p.getPosition()) {
-            case "GK"  -> attrs = new String[][]{{"DIV", "85"}, {"HND", "82"}};
+            case "GK" -> attrs = new String[][]{{"DIV", "85"}, {"HND", "82"}};
             case "DEF" -> attrs = new String[][]{{"DEF", fmt(p.getRating())}, {"PHY", fmt(p.getRating() - 2)}};
             case "MID" -> attrs = new String[][]{{"PAS", fmt(p.getRating())}, {"DRI", fmt(p.getRating() - 1)}};
-            default    -> attrs = new String[][]{{"PAC", fmt(p.getRating())}, {"SHO", fmt(p.getRating() - 2)}};
+            default -> attrs = new String[][]{{"PAC", fmt(p.getRating())}, {"SHO", fmt(p.getRating() - 2)}};
         }
 
         for (String[] attr : attrs) {
@@ -410,7 +430,9 @@ public class MyTeamController {
         return row;
     }
 
-    private String fmt(double v) { return String.valueOf((int) Math.min(99, Math.max(1, v))); }
+    private String fmt(double v) {
+        return String.valueOf((int) Math.min(99, Math.max(1, v)));
+    }
 
     // ══════════════════════════════════════════════════════════════════════════
     //  HIGHLIGHT / SELECTION
@@ -424,25 +446,25 @@ public class MyTeamController {
     private void highlightBench(HBox card, boolean highlight) {
         if (highlight) {
             card.setStyle("""
-                -fx-background-color: rgba(0,255,163,0.12);
-                -fx-background-radius: 10;
-                -fx-border-color: #00FFA3;
-                -fx-border-width: 2;
-                -fx-border-radius: 10;
-                -fx-padding: 8;
-                -fx-cursor: hand;
-                -fx-effect: dropshadow(gaussian, #00FFA3, 10, 0.4, 0, 0);
-            """);
+                        -fx-background-color: rgba(0,255,163,0.12);
+                        -fx-background-radius: 10;
+                        -fx-border-color: #00FFA3;
+                        -fx-border-width: 2;
+                        -fx-border-radius: 10;
+                        -fx-padding: 8;
+                        -fx-cursor: hand;
+                        -fx-effect: dropshadow(gaussian, #00FFA3, 10, 0.4, 0, 0);
+                    """);
         } else {
             card.setStyle("""
-                -fx-background-color: rgba(201,168,76,0.06);
-                -fx-background-radius: 10;
-                -fx-border-color: rgba(201,168,76,0.25);
-                -fx-border-width: 1;
-                -fx-border-radius: 10;
-                -fx-padding: 8;
-                -fx-cursor: hand;
-            """);
+                        -fx-background-color: rgba(201,168,76,0.06);
+                        -fx-background-radius: 10;
+                        -fx-border-color: rgba(201,168,76,0.25);
+                        -fx-border-width: 1;
+                        -fx-border-radius: 10;
+                        -fx-padding: 8;
+                        -fx-cursor: hand;
+                    """);
         }
     }
 
@@ -471,11 +493,11 @@ public class MyTeamController {
 
         Label hint = new Label("⇅  Tap to select\nthen tap to swap");
         hint.setStyle("""
-            -fx-text-fill: rgba(201,168,76,0.5);
-            -fx-font-size: 10;
-            -fx-padding: 16 0 0 0;
-            -fx-text-alignment: center;
-        """);
+                    -fx-text-fill: rgba(201,168,76,0.5);
+                    -fx-font-size: 10;
+                    -fx-padding: 16 0 0 0;
+                    -fx-text-alignment: center;
+                """);
         hint.setWrapText(true);
         hint.setMaxWidth(Double.MAX_VALUE);
         hint.setAlignment(Pos.CENTER);
@@ -507,7 +529,7 @@ public class MyTeamController {
         HBox.setHgrow(info, Priority.ALWAYS);
         Label name = new Label(shortName(p.getName()));
         name.setStyle("-fx-text-fill: white; -fx-font-size:11; -fx-font-weight:bold;");
-        Label pos = new Label(p.getPosition() + "  ·  ★ " + (int)p.getRating());
+        Label pos = new Label(p.getPosition() + "  ·  ★ " + (int) p.getRating());
         pos.setStyle("-fx-text-fill:" + posColor(p.getPosition()) + "; -fx-font-size:9;");
         info.getChildren().addAll(name, pos);
 
@@ -522,7 +544,7 @@ public class MyTeamController {
         if (player == null) return;
 
         if (selectedPlayer == null) {
-            selectedPlayer    = player;
+            selectedPlayer = player;
             selectedFromPitch = true;
             clearAllHighlights();
             highlightCard(card, true);
@@ -551,7 +573,7 @@ public class MyTeamController {
 
     private void handleBenchClick(int benchIndex, Player player, HBox card) {
         if (selectedPlayer == null) {
-            selectedPlayer    = player;
+            selectedPlayer = player;
             selectedFromPitch = false;
             clearAllHighlights();
             highlightBench(card, true);
@@ -585,7 +607,7 @@ public class MyTeamController {
 
     private void clearAllHighlights() {
         for (StackPane s : pitchSlots) highlightCard(s, false);
-        for (HBox h     : benchCards)  highlightBench(h, false);
+        for (HBox h : benchCards) highlightBench(h, false);
     }
 
     private void setStatus(String msg) {
@@ -597,26 +619,12 @@ public class MyTeamController {
     // ══════════════════════════════════════════════════════════════════════════
     @FXML
     private void goBack() {
-        try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/org/buet/fantasymanagerxi/fxml/prehome-view.fxml"));
-            Parent root = loader.load();
-            Stage stage = getCurrentStage();
-            stage.setScene(new Scene(root, 1000, 600));
-            stage.setTitle("Fantasy League XI");
-        } catch (IOException e) { e.printStackTrace(); }
+        SceneSwitcher.switchScene("prehome-view.fxml", backbtn, 1100, 720);
     }
 
     @FXML
     private void goToMarket() {
-        try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/org/buet/fantasymanagerxi/fxml/transfer-market.fxml"));
-            Parent root = loader.load();
-            Stage stage = getCurrentStage();
-            stage.setScene(new Scene(root, 1200, 760));
-            stage.setTitle("Transfer Market — " + SessionManager.getLoggedInClub());
-        } catch (IOException e) { e.printStackTrace(); }
+        SceneSwitcher.switchScene("transfer-market.fxml", marketBtn, 1100, 720);
     }
 
     private Stage getCurrentStage() {
@@ -643,11 +651,11 @@ public class MyTeamController {
     private String posColor(String pos) {
         if (pos == null) return "#aaaaaa";
         return switch (pos) {
-            case "GK"  -> "#F39C12";
+            case "GK" -> "#F39C12";
             case "DEF" -> "#3498DB";
             case "MID" -> "#2ECC71";
             case "FWD" -> "#E74C3C";
-            default    -> "#888888";
+            default -> "#888888";
         };
     }
 
@@ -660,7 +668,8 @@ public class MyTeamController {
         try {
             InputStream is = getClass().getResourceAsStream(path);
             if (is != null) return new Image(is);
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
         return null;
     }
 }

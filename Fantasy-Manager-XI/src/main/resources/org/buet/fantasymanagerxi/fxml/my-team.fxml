@@ -23,7 +23,7 @@
             <!-- Title row -->
             <HBox alignment="CENTER_LEFT" spacing="16" style="-fx-padding: 14 24 10 24;">
 
-                <Button mnemonicParsing="false" onAction="#goBack" style="-fx-background-color: rgba(201,168,76,0.1);                                -fx-text-fill: #c9a84c;                                -fx-border-color: #c9a84c;                                -fx-border-radius: 8;                                -fx-background-radius: 8;                                -fx-padding: 7 16;                                -fx-font-size: 12;                                -fx-font-weight: bold;                                -fx-cursor: hand;" text="← Back" />
+                <Button fx:id="backbtn" mnemonicParsing="false" onAction="#goBack" style="-fx-background-color: rgba(201,168,76,0.1);                                -fx-text-fill: #c9a84c;                                -fx-border-color: #c9a84c;                                -fx-border-radius: 8;                                -fx-background-radius: 8;                                -fx-padding: 7 16;                                -fx-font-size: 12;                                -fx-font-weight: bold;                                -fx-cursor: hand;" text="← Back" />
 
                 <!-- Gold badge icon -->
                 <Label style="-fx-text-fill: #c9a84c; -fx-font-size: 22;" text="🏆" />
@@ -39,7 +39,7 @@
 
                 <Region prefWidth="20" />
 
-                <Button mnemonicParsing="false" onAction="#goToMarket" style="-fx-background-color: linear-gradient(to bottom, #c9a84c, #a0722a);                                -fx-text-fill: #0d1b2a;                                -fx-background-radius: 8;                                -fx-padding: 9 22;                                -fx-font-size: 12;                                -fx-font-weight: bold;                                -fx-cursor: hand;                                -fx-effect: dropshadow(gaussian, rgba(201,168,76,0.5), 8, 0, 0, 2);" text="⚡ Transfer Market" />
+                <Button fx:id="marketBtn" mnemonicParsing="false" onAction="#goToMarket" style="-fx-background-color: linear-gradient(to bottom, #c9a84c, #a0722a);                                -fx-text-fill: #0d1b2a;                                -fx-background-radius: 8;                                -fx-padding: 9 22;                                -fx-font-size: 12;                                -fx-font-weight: bold;                                -fx-cursor: hand;                                -fx-effect: dropshadow(gaussian, rgba(201,168,76,0.5), 8, 0, 0, 2);" text="⚡ Transfer Market" />
             </HBox>
 
             <!-- Formation row -->

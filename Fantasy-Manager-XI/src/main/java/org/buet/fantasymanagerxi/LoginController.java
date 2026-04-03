@@ -7,6 +7,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import org.buet.fantasymanagerxi.util.SceneSwitcher;
 
 import java.io.IOException;
 import java.util.List;
@@ -73,20 +74,7 @@ public class LoginController implements NetworkThread.MessageListener {
                 SessionManager.setNetworkThread(networkThread);
                 SessionManager.setLoggedInClub(clubDropdown.getValue());
                 SessionManager.setSquad(squad);
-
-                try {
-                    FXMLLoader loader = new FXMLLoader(
-                            getClass().getResource(
-                                    "/org/buet/fantasymanagerxi/fxml/player-db.fxml")
-                    );
-                    Parent root = loader.load();
-                    Stage stage = (Stage) loginBtn.getScene().getWindow();
-                    stage.setScene(new Scene(root, 1100, 720));
-                    stage.setTitle("Player Database — " +
-                            clubDropdown.getValue());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            SceneSwitcher.switchScene("prehome-view.fxml",loginBtn,1100,720);
             }
 
             case LOGIN_FAIL -> {

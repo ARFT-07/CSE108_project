@@ -1,5 +1,6 @@
 package org.buet.fantasymanagerxi;
 
+import javafx.event.ActionEvent;
 import org.buet.fantasymanagerxi.model.MarketMessage;
 import org.buet.fantasymanagerxi.model.Player;
 import javafx.fxml.*;
@@ -10,6 +11,7 @@ import javafx.scene.image.*;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import org.buet.fantasymanagerxi.util.SceneSwitcher;
 
 import java.io.*;
 import java.util.List;
@@ -229,18 +231,13 @@ public class TransferMarketController implements NetworkThread.MessageListener {
     }
 
     @FXML
-    private void goBack() {
-        try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource(
-                            "/org/buet/fantasymanagerxi/fxml/player-db.fxml")
-            );
-            Parent root = loader.load();
-            Stage stage = (Stage) backBtn.getScene().getWindow();
-            stage.setScene(new Scene(root, 1100, 720));
-            stage.setTitle("Player Database — " + SessionManager.getLoggedInClub());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+    private void gotoPlayerDB(ActionEvent event) {
+
+        SceneSwitcher.switchScene("player-db.fxml", event, 1100, 720);
+    }
+
+    public void gotoHome(ActionEvent event) {
+        SceneSwitcher.switchScene("prehome-view.fxml", event, 1100, 720);
     }
 }

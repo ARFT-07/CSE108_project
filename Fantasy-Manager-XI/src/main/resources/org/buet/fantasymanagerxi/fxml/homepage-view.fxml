@@ -8,6 +8,7 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.media.MediaView?>
@@ -20,7 +21,7 @@
          </padding>
          <children>
             <Label styleClass="section-title" text="Top 6 Teams" />
-            <ListView fx:id="teamListView" styleClass="list-view" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="150.0" VBox.vgrow="ALWAYS">
+            <ListView fx:id="teamListView" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="150.0" styleClass="list-view" VBox.vgrow="ALWAYS">
                <padding>
                   <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                </padding>
@@ -68,6 +69,11 @@
       </StackPane>
    </bottom>
    <top>
-      <Button fx:id="gotoPlayerDb" mnemonicParsing="false" onAction="#movetoplayerDb" text="Player DB" BorderPane.alignment="TOP_RIGHT" />
+      <HBox BorderPane.alignment="TOP_RIGHT">
+         <children>
+            <Button fx:id="gotoPreHome" mnemonicParsing="false" onAction="#backToPreHome" text="Back" />
+            <Pane prefHeight="0.0" prefWidth="480.0" HBox.hgrow="ALWAYS" />
+         </children>
+      </HBox>
    </top>
 </BorderPane>

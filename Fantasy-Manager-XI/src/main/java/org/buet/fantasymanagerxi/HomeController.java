@@ -13,6 +13,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import org.buet.fantasymanagerxi.model.*;
 import org.buet.fantasymanagerxi.service.DataService;
+import org.buet.fantasymanagerxi.util.SceneSwitcher;
 
 import java.io.File;
 import java.net.URL;
@@ -112,8 +113,7 @@ public class HomeController {
     }
 
     @FXML
-    private void movetoplayerDb(ActionEvent actionEvent) {
-        return;
+    public void backToPreHome(ActionEvent actionEvent) {
+        SceneSwitcher.switchScene("prehome-view.fxml",actionEvent,1100,720);
     }
-
 }

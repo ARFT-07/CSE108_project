@@ -1,41 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml"
-            fx:controller="org.buet.fantasymanagerxi.TransferMarketController"
-            style="-fx-background-color: #0f0f1a;">
+<BorderPane style="-fx-background-color: #0f0f1a;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.buet.fantasymanagerxi.TransferMarketController">
 
     <!-- Top bar -->
     <top>
-        <HBox spacing="20" style="-fx-padding: 16 24; -fx-background-color: #16213e;
-                                   -fx-alignment: center-left;">
-            <Label text="Transfer Market"
-                   style="-fx-text-fill: white; -fx-font-size: 20;
-                           -fx-font-weight: bold;"/>
-            <Label fx:id="clubLabel"
-                   style="-fx-text-fill: #aaaaaa; -fx-font-size: 14;"/>
-            <Region HBox.hgrow="ALWAYS"/>
-            <Button fx:id="backBtn" text="Back to Squad"
-                    onAction="#goBack"
-                    style="-fx-background-color: #e94560; -fx-text-fill: white;
-                            -fx-background-radius: 6; -fx-padding: 8 16;
-                            -fx-cursor: hand;"/>
+        <HBox spacing="20" style="-fx-padding: 16 24; -fx-background-color: #16213e;                                    -fx-alignment: center-left;">
+            <Label style="-fx-text-fill: white; -fx-font-size: 20;                            -fx-font-weight: bold;" text="Transfer Market" />
+            <Label fx:id="clubLabel" style="-fx-text-fill: #aaaaaa; -fx-font-size: 14;" />
+            <Region HBox.hgrow="ALWAYS" />
+            <Button fx:id="backBtn" onAction="#gotoPlayerDB" style="-fx-background-color: #e94560; -fx-text-fill: white;                             -fx-background-radius: 6; -fx-padding: 8 16;                             -fx-cursor: hand;" text="MyPlayers" />
+         <Button fx:id="homebtn" mnemonicParsing="false" onAction="#gotoHome" text="Home" />
         </HBox>
     </top>
 
     <!-- Player listing -->
     <center>
         <VBox spacing="0" style="-fx-padding: 24;">
-            <Label fx:id="countLabel"
-                   style="-fx-text-fill: #aaaaaa; -fx-font-size: 13;
-                           -fx-padding: 0 0 16 0;"/>
-            <ScrollPane fitToWidth="true"
-                        style="-fx-background: transparent;
-                                -fx-background-color: transparent;">
-                <FlowPane fx:id="marketGrid" hgap="16" vgap="16"/>
+            <Label fx:id="countLabel" style="-fx-text-fill: #aaaaaa; -fx-font-size: 13;                            -fx-padding: 0 0 16 0;" />
+            <ScrollPane fitToWidth="true" style="-fx-background: transparent;                                 -fx-background-color: transparent;">
+                <FlowPane fx:id="marketGrid" hgap="16" vgap="16" />
             </ScrollPane>
         </VBox>
     </center>
@@ -43,8 +35,7 @@
     <!-- Bottom status bar -->
     <bottom>
         <HBox style="-fx-padding: 12 24; -fx-background-color: #16213e;">
-            <Label fx:id="statusLabel"
-                   style="-fx-text-fill: #aaaaaa; -fx-font-size: 13;"/>
+            <Label fx:id="statusLabel" style="-fx-text-fill: #aaaaaa; -fx-font-size: 13;" />
         </HBox>
     </bottom>
 

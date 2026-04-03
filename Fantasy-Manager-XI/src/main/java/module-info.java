@@ -10,6 +10,7 @@ module org.buet.fantasymanagerxi {
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
     requires javafx.media;
+    requires java.desktop;
 
     opens org.buet.fantasymanagerxi to javafx.fxml;
     exports org.buet.fantasymanagerxi;
