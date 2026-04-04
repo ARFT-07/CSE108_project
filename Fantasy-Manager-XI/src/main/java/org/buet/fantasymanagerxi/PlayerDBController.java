@@ -249,6 +249,18 @@ public class PlayerDBController implements NetworkThread.MessageListener {
 
         // Get the squad the server already sent us at login
         squad = SessionManager.getSquad();
+        if (squad != null) {
+            for (Player p : squad) {
+                if (p.getImagePath() == null) {
+                    String imageName = p.getName()
+                            .toLowerCase()
+                            .replaceAll("\\s+", "_")
+                            .replaceAll("[^a-z0-9_]", "")
+                            + ".png";
+                    p.setImagePath("org/buet/fantasymanagerxi/images/players/" + imageName);
+                }
+            }
+        }
 
         // Register this screen as the active message listener
         SessionManager.getNetworkThread().setListener(this);
@@ -359,6 +371,14 @@ public class PlayerDBController implements NetworkThread.MessageListener {
     }
 
     private Image loadPlayerImage(Player p) {
+        try {
+            String path = "/" + p.getImagePath();
+            System.out.println("Trying to load: " + path); // ADD THIS
+            InputStream is = getClass().getResourceAsStream(path);
+            System.out.println("Stream result: " + is); // ADD THIS
+            if (is != null) return new Image(is);
+        } catch (Exception ignored) {
+        }
         try {
             InputStream is = getClass().getResourceAsStream("/" + p.getImagePath());
             if (is != null) return new Image(is);

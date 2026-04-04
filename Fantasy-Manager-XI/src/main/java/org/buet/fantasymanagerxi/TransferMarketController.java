@@ -214,20 +214,15 @@ public class TransferMarketController implements NetworkThread.MessageListener {
     }
 
     private Image loadPlayerImage(Player p) {
-        try {
-            InputStream is = getClass().getResourceAsStream("/" + p.getImagePath());
-            if (is != null) return new Image(is);
-        } catch (Exception ignored) {}
-        try {
-            File f = new File(p.getImagePath());
-            if (f.exists()) return new Image(f.toURI().toString());
-        } catch (Exception ignored) {}
-        try {
-            InputStream is = getClass().getResourceAsStream(
-                    "/org/buet/fantasymanagerxi/images/players/placeholder.png");
-            if (is != null) return new Image(is);
-        } catch (Exception ignored) {}
-        return null;
+        if (p.getImagePath() == null) {
+            String imageName = p.getName()
+                    .toLowerCase()
+                    .replaceAll("\\s+", "_")
+                    .replaceAll("[^a-z0-9_]", "")
+                    + ".png";
+            p.setImagePath("org/buet/fantasymanagerxi/images/players/" + imageName);
+        }
+        return new Image(p.getImagePath());
     }
 
     @FXML

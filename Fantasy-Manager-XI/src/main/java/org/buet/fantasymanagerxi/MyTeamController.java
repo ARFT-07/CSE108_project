@@ -149,7 +149,19 @@ public class MyTeamController {
         substitutes.clear();
 
         List<Player> squad = SessionManager.getSquad();
-        if (squad == null || squad.isEmpty()) return;
+        if (squad == null || squad.isEmpty())
+            return;
+
+        for (Player p : squad) {
+            if (p.getImagePath() == null) {
+                String imageName = p.getName()
+                        .toLowerCase()
+                        .replaceAll("\\s+", "_")
+                        .replaceAll("[^a-z0-9_]", "")
+                        + ".png";
+                p.setImagePath("org/buet/fantasymanagerxi/images/players/" + imageName);
+            }
+        }
 
         List<Player> sorted = new ArrayList<>(squad);
         sorted.sort(Comparator
