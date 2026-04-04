@@ -57,8 +57,7 @@ public class HomeController {
 
     private void setupMediaPlayer() {
         URL mediaUrl = getClass().getResource("/org/buet/fantasymanagerxi/data/fcb.mp4");
-        // String path = new File("src/main/resources/org/buet/fantasymanagerxi/data/fcb.mp4").toURI().toString();
-        if (mediaUrl == null) {
+               if (mediaUrl == null) {
             System.out.println("File not found");
             return;
         }
@@ -66,10 +65,7 @@ public class HomeController {
         Media media = new Media(mediaUrl.toString());
         mediaPlayer = new MediaPlayer(media);
         mediaView.setMediaPlayer(mediaPlayer);
-        mediaPlayer.setAutoPlay(false);
-//        mediaView.fitWidthProperty().bind(videoPane.widthProperty());
-//        mediaView.fitHeightProperty().bind(videoPane.heightProperty());
-//        mediaView.setPreserveRatio(true);
+        mediaPlayer.setAutoPlay(true);
     }
 
     @FXML
