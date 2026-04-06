@@ -1,40 +1,43 @@
 package org.buet.fantasymanagerxi;
 
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.shape.Rectangle;
 import org.buet.fantasymanagerxi.model.MarketMessage;
 import org.buet.fantasymanagerxi.model.Player;
-import javafx.fxml.*;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.image.*;
-import javafx.scene.layout.*;
-import javafx.scene.shape.Rectangle;
-import javafx.stage.Stage;
+import org.buet.fantasymanagerxi.util.ClubRegistry;
 import org.buet.fantasymanagerxi.util.SceneSwitcher;
 
-import java.io.*;
+import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 
 public class TransferMarketController implements NetworkThread.MessageListener {
 
     @FXML private FlowPane marketGrid;
-    @FXML private Label    countLabel;
-    @FXML private Label    clubLabel;
-    @FXML private Label    statusLabel;
-    @FXML private Button   backBtn;
+    @FXML private Label countLabel;
+    @FXML private Label clubLabel;
+    @FXML private Label statusLabel;
+    @FXML private Button backBtn;
 
     private List<Player> listings;
 
     @FXML
     public void initialize() {
-        // Register as the active listener
         SessionManager.getNetworkThread().setListener(this);
 
-        clubLabel.setText("Logged in as: " + SessionManager.getLoggedInClub());
+        clubLabel.setText("Logged in as: " + SessionManager.getLoggedInClubName());
         statusLabel.setText("Ready.");
 
-        // Request fresh market data from server
         MarketMessage msg = new MarketMessage(MarketMessage.Type.GET_MARKET);
         SessionManager.getNetworkThread().sendMessage(msg);
     }
@@ -53,8 +56,7 @@ public class TransferMarketController implements NetworkThread.MessageListener {
         for (Player p : listings) {
             marketGrid.getChildren().add(buildMarketCard(p));
         }
-        countLabel.setText(listings.size() + " player" +
-                (listings.size() != 1 ? "s" : "") + " listed");
+        countLabel.setText(listings.size() + " player" + (listings.size() != 1 ? "s" : "") + " listed");
     }
 
     private VBox buildMarketCard(Player p) {
@@ -68,19 +70,19 @@ public class TransferMarketController implements NetworkThread.MessageListener {
             -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 8, 0, 0, 2);
             """);
 
-        // Photo
         ImageView photo = new ImageView();
         photo.setFitWidth(156);
         photo.setFitHeight(156);
         photo.setPreserveRatio(true);
         Image img = loadPlayerImage(p);
-        if (img != null) photo.setImage(img);
+        if (img != null) {
+            photo.setImage(img);
+        }
         Rectangle clip = new Rectangle(156, 156);
         clip.setArcWidth(12);
         clip.setArcHeight(12);
         photo.setClip(clip);
 
-        // Position badge
         Label posBadge = new Label(p.getPosition());
         posBadge.setStyle(
                 "-fx-background-color: " + p.getPositionColor() + ";" +
@@ -88,64 +90,44 @@ public class TransferMarketController implements NetworkThread.MessageListener {
                         "-fx-background-radius: 4; -fx-padding: 2 6 2 6;"
         );
 
-        // Name
         Label name = new Label(p.getName());
         name.setWrapText(true);
-        name.setStyle("-fx-text-fill: white; -fx-font-size: 13; " +
-                "-fx-font-weight: bold;");
+        name.setStyle("-fx-text-fill: white; -fx-font-size: 13; -fx-font-weight: bold;");
 
-        // Selling club
         Label fromClub = new Label("From: " + p.getClub());
         fromClub.setStyle("-fx-text-fill: #aaaaaa; -fx-font-size: 11;");
 
-        // Rating
-        Label rating = new Label("★ " + p.getRating());
-        rating.setStyle("-fx-text-fill: #F1C40F; -fx-font-size: 12; " +
-                "-fx-font-weight: bold;");
+        Label rating = new Label("Rating: " + p.getRating());
+        rating.setStyle("-fx-text-fill: #F1C40F; -fx-font-size: 12; -fx-font-weight: bold;");
 
-        // Asking price
-        Label price = new Label("£" + String.format("%,.0f", p.getAskingPrice()) + "M");
-        price.setStyle("-fx-text-fill: #2ECC71; -fx-font-size: 13; " +
-                "-fx-font-weight: bold;");
+        Label price = new Label("GBP " + String.format("%,.0f", p.getAskingPrice()) + "M");
+        price.setStyle("-fx-text-fill: #2ECC71; -fx-font-size: 13; -fx-font-weight: bold;");
 
-        // Buy button — disabled if this is your own player
         Button buyBtn = new Button("Buy");
-        boolean isOwnPlayer = p.getClub().equals(SessionManager.getLoggedInClub());
+        boolean isOwnPlayer = ClubRegistry.sameClub(p.getClub(), SessionManager.getLoggedInClubId());
         buyBtn.setDisable(isOwnPlayer);
+        if (isOwnPlayer) {
+            buyBtn.setTooltip(new Tooltip("You cannot buy back your own listed player."));
+        }
         buyBtn.setStyle("-fx-background-color: " + (isOwnPlayer ? "#555555" : "#e94560") +
-                "; -fx-text-fill: white; -fx-background-radius: 6;" +
-                " -fx-padding: 6 16; -fx-cursor: hand;");
+                "; -fx-text-fill: white; -fx-background-radius: 6; -fx-padding: 6 16; -fx-cursor: hand;");
         buyBtn.setMaxWidth(Double.MAX_VALUE);
         buyBtn.setOnAction(e -> confirmAndBuy(p));
 
         card.getChildren().addAll(photo, posBadge, name, fromClub, rating, price, buyBtn);
-
-        card.setOnMouseEntered(e -> card.setStyle("""
-            -fx-background-color: #0f3460;
-            -fx-background-radius: 12;
-            -fx-padding: 12;
-            -fx-cursor: hand;
-            -fx-effect: dropshadow(gaussian, rgba(233,69,96,0.5), 14, 0, 0, 0);
-            """));
-        card.setOnMouseExited(e -> card.setStyle("""
-            -fx-background-color: #16213e;
-            -fx-background-radius: 12;
-            -fx-padding: 12;
-            -fx-cursor: hand;
-            -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 8, 0, 0, 2);
-            """));
-
         return card;
     }
 
     private void confirmAndBuy(Player p) {
-        // Show confirmation dialog before buying
+        if (ClubRegistry.sameClub(p.getClub(), SessionManager.getLoggedInClubId())) {
+            statusLabel.setText("You cannot buy back your own listed player.");
+            return;
+        }
+
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirm Purchase");
         alert.setHeaderText("Buy " + p.getName() + "?");
-        alert.setContentText("Asking price: £" +
-                String.format("%,.0f", p.getAskingPrice()) + "M\n" +
-                "This player will be added to your squad.");
+        alert.setContentText("Asking price: GBP " + String.format("%,.0f", p.getAskingPrice()) + "M\nThis player will be added to your squad.");
 
         alert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
@@ -161,7 +143,6 @@ public class TransferMarketController implements NetworkThread.MessageListener {
     @Override
     public void onMessageReceived(MarketMessage msg) {
         switch (msg.getType()) {
-
             case MARKET_UPDATE -> {
                 @SuppressWarnings("unchecked")
                 List<Player> updated = (List<Player>) msg.getPayload();
@@ -169,21 +150,18 @@ public class TransferMarketController implements NetworkThread.MessageListener {
                 refreshGrid();
                 statusLabel.setText("Market updated.");
             }
-
             case BUY_OK -> {
                 Player bought = (Player) msg.getPayload();
 
-                // Add the new player to the local squad
-                SessionManager.getSquad().add(bought);
+                if (SessionManager.getSquad().stream().noneMatch(player -> player.getName().equals(bought.getName()))) {
+                    SessionManager.getSquad().add(bought);
+                }
 
-                statusLabel.setText(bought.getName() +
-                        " successfully added to your squad!");
+                statusLabel.setText(bought.getName() + " successfully added to your squad.");
 
-                // Request updated market to reflect the purchase
                 MarketMessage req = new MarketMessage(MarketMessage.Type.GET_MARKET);
                 SessionManager.getNetworkThread().sendMessage(req);
             }
-
             case ERROR -> {
                 String error = (String) msg.getPayload();
                 statusLabel.setText("Error: " + error);
@@ -194,7 +172,6 @@ public class TransferMarketController implements NetworkThread.MessageListener {
                 alert.setContentText(error);
                 alert.showAndWait();
 
-                // Refresh market in case the player was already sold
                 MarketMessage req = new MarketMessage(MarketMessage.Type.GET_MARKET);
                 SessionManager.getNetworkThread().sendMessage(req);
             }
@@ -203,8 +180,8 @@ public class TransferMarketController implements NetworkThread.MessageListener {
                 List<Player> updatedSquad = (List<Player>) msg.getPayload();
                 SessionManager.setSquad(updatedSquad);
             }
-
-            default -> {}
+            default -> {
+            }
         }
     }
 
@@ -214,24 +191,33 @@ public class TransferMarketController implements NetworkThread.MessageListener {
     }
 
     private Image loadPlayerImage(Player p) {
-        if (p.getImagePath() == null) {
-            String imageName = p.getName()
-                    .toLowerCase()
-                    .replaceAll("\\s+", "_")
-                    .replaceAll("[^a-z0-9_]", "")
-                    + ".png";
+        if (p.getImagePath() == null || p.getImagePath().isBlank()) {
+            String imageName = p.getName().toLowerCase().replaceAll("\\s+", "_").replaceAll("[^a-z0-9_]", "") + ".png";
             p.setImagePath("org/buet/fantasymanagerxi/images/players/" + imageName);
         }
-        return new Image(p.getImagePath());
+        try {
+            InputStream is = getClass().getResourceAsStream("/" + p.getImagePath());
+            if (is != null) {
+                return new Image(is);
+            }
+        } catch (Exception ignored) {
+        }
+        try {
+            File f = new File(p.getImagePath());
+            if (f.exists()) {
+                return new Image(f.toURI().toString());
+            }
+        } catch (Exception ignored) {
+        }
+        return null;
     }
 
     @FXML
-
     private void gotoPlayerDB(ActionEvent event) {
-
         SceneSwitcher.switchScene("player-db.fxml", event, 1100, 720);
     }
 
+    @FXML
     public void gotoHome(ActionEvent event) {
         SceneSwitcher.switchScene("prehome-view.fxml", event, 1100, 720);
     }

@@ -1,23 +1,23 @@
 package org.buet.fantasymanagerxi;
 
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import org.buet.fantasymanagerxi.model.MarketMessage;
 import org.buet.fantasymanagerxi.model.Player;
-import javafx.fxml.*;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.stage.Stage;
+import org.buet.fantasymanagerxi.util.ClubRegistry;
 import org.buet.fantasymanagerxi.util.SceneSwitcher;
 
-import java.io.IOException;
 import java.util.List;
 
 public class LoginController implements NetworkThread.MessageListener {
 
     @FXML private ComboBox<String> clubDropdown;
-    @FXML private PasswordField    passwordField;
-    @FXML private Label            errorLabel;
-    @FXML private Button           loginBtn;
+    @FXML private PasswordField passwordField;
+    @FXML private Label errorLabel;
+    @FXML private Button loginBtn;
 
     private NetworkThread networkThread;
 
@@ -25,7 +25,6 @@ public class LoginController implements NetworkThread.MessageListener {
     public void initialize() {
         errorLabel.setText("");
 
-        // Populate dropdown with all six clubs
         clubDropdown.getItems().addAll(
                 "CHELSEA",
                 "LIVERPOOL",
@@ -35,14 +34,13 @@ public class LoginController implements NetworkThread.MessageListener {
                 "SPURS"
         );
 
-        // Start network thread and connect to server
         networkThread = new NetworkThread(this);
         networkThread.start();
     }
 
     @FXML
     private void handleLogin() {
-        String club     = clubDropdown.getValue();
+        String club = clubDropdown.getValue();
         String password = passwordField.getText().trim();
 
         if (club == null) {
@@ -66,28 +64,24 @@ public class LoginController implements NetworkThread.MessageListener {
     @Override
     public void onMessageReceived(MarketMessage msg) {
         switch (msg.getType()) {
-
             case LOGIN_OK -> {
                 @SuppressWarnings("unchecked")
                 List<Player> squad = (List<Player>) msg.getPayload();
 
-                SessionManager.setNetworkThread(networkThread);
-                SessionManager.setLoggedInClub(clubDropdown.getValue());
-                SessionManager.setSquad(squad);
-            SceneSwitcher.switchScene("prehome-view.fxml",loginBtn,1100,720);
+                String clubId = ClubRegistry.toCode(msg.getClubName() != null ? msg.getClubName() : clubDropdown.getValue());
+                SessionManager.startSession(networkThread, clubId, ClubRegistry.toDisplay(clubId), squad);
+                SceneSwitcher.switchScene("prehome-view.fxml", loginBtn, 1100, 720);
             }
-
             case LOGIN_FAIL -> {
                 errorLabel.setText((String) msg.getPayload());
                 loginBtn.setDisable(false);
             }
-
             case ERROR -> {
                 errorLabel.setText("Server error. Please try again.");
                 loginBtn.setDisable(false);
             }
-
-            default -> {}
+            default -> {
+            }
         }
     }
 

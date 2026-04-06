@@ -5,61 +5,55 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
 <StackPane prefHeight="600.0" prefWidth="1000.0"
+           styleClass="login-root"
            xmlns="http://javafx.com/javafx/25"
            xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="org.buet.fantasymanagerxi.LoginController">
    <children>
-      <VBox alignment="CENTER" prefWidth="340.0" spacing="20.0"
-            style="-fx-background-color: #16213e;
-                     -fx-background-radius: 12;
-                     -fx-padding: 40;">
+      <VBox alignment="CENTER_LEFT" maxWidth="420.0" prefWidth="420.0" spacing="12.0" styleClass="login-card">
+         <padding>
+            <Insets bottom="34.0" left="34.0" right="34.0" top="34.0" />
+         </padding>
+         <children>
+            <Label text="Club Login" styleClass="login-title" />
+            <Label text="Choose your club account and enter the password to continue." wrapText="true" styleClass="login-subtitle" />
+            <Region prefHeight="6.0" />
 
-         <Label text="Fantasy League XI"
-                style="-fx-text-fill: white; -fx-font-size: 22;
-                           -fx-font-weight: bold;"/>
+            <Label text="Club" styleClass="field-label" />
+            <ComboBox fx:id="clubDropdown"
+                      promptText="Choose a club"
+                      prefHeight="48.0"
+                      prefWidth="352.0"
+                      styleClass="form-combo" />
+            <Label text="Select the club you want to manage." styleClass="field-help" />
 
-         <Label text="Select your club and enter password"
-                style="-fx-text-fill: #aaaaaa; -fx-font-size: 13;"/>
+            <Label text="Password" styleClass="field-label" />
+            <PasswordField fx:id="passwordField"
+                           promptText="Enter your password"
+                           prefHeight="48.0"
+                           prefWidth="352.0"
+                           styleClass="form-field" />
 
-         <!-- Club dropdown -->
-         <ComboBox fx:id="clubDropdown"
-                   promptText="Select Club"
-                   prefWidth="260"
-                   style="-fx-background-color: #0f3460;
-                             -fx-text-fill: white;
-                             -fx-font-size: 14;"/>
+            <Label fx:id="errorLabel"
+                   text=""
+                   wrapText="true"
+                   minHeight="20.0"
+                   styleClass="error-text" />
 
-         <!-- Password -->
-         <PasswordField fx:id="passwordField"
-                        promptText="Enter password"
-                        prefWidth="260"
-                        style="-fx-background-color: #0f3460;
-                                  -fx-text-fill: white;
-                                  -fx-font-size: 14;
-                                  -fx-padding: 10;"/>
+            <Region prefHeight="4.0" />
 
-         <!-- Error message -->
-         <Label fx:id="errorLabel"
-                text=""
-                style="-fx-text-fill: #e94560; -fx-font-size: 12;"/>
-
-         <!-- Login button -->
-         <Button fx:id="loginBtn"
-                 text="Login"
-                 onAction="#handleLogin"
-                 prefWidth="260"
-                 style="-fx-background-color: #e94560;
-                           -fx-text-fill: white;
-                           -fx-font-size: 16;
-                           -fx-font-weight: bold;
-                           -fx-background-radius: 6;
-                           -fx-padding: 10;
-                           -fx-cursor: hand;"/>
+            <Button fx:id="loginBtn"
+                    text="Login"
+                    onAction="#handleLogin"
+                    prefHeight="48.0"
+                    prefWidth="352.0"
+                    styleClass="login-button" />
+         </children>
       </VBox>
    </children>
 </StackPane>

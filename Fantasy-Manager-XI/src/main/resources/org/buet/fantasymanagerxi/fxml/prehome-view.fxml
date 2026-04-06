@@ -2,42 +2,68 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.buet.fantasymanagerxi.PreHomeController">
-   <center>
-      <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+<BorderPane prefHeight="720.0" prefWidth="1100.0" style="-fx-background-color: #0f172a;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.buet.fantasymanagerxi.PreHomeController">
+   <top>
+      <HBox alignment="CENTER_LEFT" spacing="12.0" style="-fx-background-color: #111827; -fx-padding: 18 24 18 24;">
          <children>
-            <Button fx:id="gotoPlayerDb" alignment="CENTER" mnemonicParsing="false" onAction="#movetoplayerDb" prefHeight="70.0" prefWidth="600.0" text="Players">
-               <VBox.margin>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-               </VBox.margin>
-               <padding>
-                  <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
-               </padding>
-            </Button>
-            <Button fx:id="gotomyteamplayerbtn" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#movetoMyPlayers" prefHeight="70.0" prefWidth="600.0" text="MyTeam">
-               <VBox.margin>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-               </VBox.margin>
-               <padding>
-                  <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
-               </padding>
-            </Button>
-            <Button fx:id="gotoHomepagebtn" mnemonicParsing="false" onAction="#movetoHomePage" prefHeight="70.0" prefWidth="600.0" text="League">
-               <VBox.margin>
-                  <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
-               </VBox.margin>
-            </Button>
-            <Button fx:id="handleTransferbtn" mnemonicParsing="false" onAction="#movetoTransferPage" prefHeight="70.0" prefWidth="600.0" text="Transfers">
-               <padding>
-                  <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
-               </padding>
-               <VBox.margin>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-               </VBox.margin>
-            </Button>
+            <VBox spacing="4.0">
+               <children>
+                  <Label text="Fantasy Manager" style="-fx-text-fill: white; -fx-font-size: 24; -fx-font-weight: bold;" />
+                  <Label fx:id="clubNameLabel" style="-fx-text-fill: #93c5fd; -fx-font-size: 13;" />
+               </children>
+            </VBox>
+            <Region HBox.hgrow="ALWAYS" />
+            <Button mnemonicParsing="false" onAction="#handleLogout" style="-fx-background-color: #b91c1c; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 10 18;" text="Logout" />
+         </children>
+      </HBox>
+   </top>
+   <left>
+      <VBox prefWidth="280.0" spacing="12.0" style="-fx-background-color: #111827; -fx-padding: 24;">
+         <children>
+            <Label text="Navigation" style="-fx-text-fill: #cbd5e1; -fx-font-size: 14; -fx-font-weight: bold;" />
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#movetoplayerDb" style="-fx-background-color: #1d4ed8; -fx-text-fill: white; -fx-font-size: 14; -fx-background-radius: 10; -fx-padding: 12 16;" text="Players" />
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#movetoMyPlayers" style="-fx-background-color: #2563eb; -fx-text-fill: white; -fx-font-size: 14; -fx-background-radius: 10; -fx-padding: 12 16;" text="My Team" />
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#movetoScoutPlayers" style="-fx-background-color: #0f766e; -fx-text-fill: white; -fx-font-size: 14; -fx-background-radius: 10; -fx-padding: 12 16;" text="Scout Players" />
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#movetoTransferPage" style="-fx-background-color: #7c3aed; -fx-text-fill: white; -fx-font-size: 14; -fx-background-radius: 10; -fx-padding: 12 16;" text="Transfer Market" />
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#movetoHomePage" style="-fx-background-color: #374151; -fx-text-fill: white; -fx-font-size: 14; -fx-background-radius: 10; -fx-padding: 12 16;" text="League" />
+         </children>
+      </VBox>
+   </left>
+   <center>
+      <VBox spacing="18.0" style="-fx-padding: 24;">
+         <children>
+            <VBox spacing="6.0" style="-fx-background-color: #111827; -fx-background-radius: 16; -fx-padding: 22;">
+               <children>
+                  <Label text="Club Dashboard" style="-fx-text-fill: white; -fx-font-size: 22; -fx-font-weight: bold;" />
+                  <Label text="Review the market, scout rival squads, and monitor private offers from other clubs." style="-fx-text-fill: #94a3b8; -fx-font-size: 13;" wrapText="true" />
+               </children>
+            </VBox>
+            <VBox spacing="12.0" style="-fx-background-color: #111827; -fx-background-radius: 16; -fx-padding: 22;" VBox.vgrow="ALWAYS">
+               <children>
+                  <HBox alignment="CENTER_LEFT" spacing="12.0">
+                     <children>
+                        <Label text="Incoming Offers" style="-fx-text-fill: white; -fx-font-size: 18; -fx-font-weight: bold;" />
+                        <Label fx:id="offersSummaryLabel" style="-fx-text-fill: #22c55e; -fx-font-size: 12; -fx-font-weight: bold;" />
+                     </children>
+                  </HBox>
+                  <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;" VBox.vgrow="ALWAYS">
+                     <content>
+                        <VBox fx:id="offersContainer" spacing="10.0" style="-fx-padding: 4 2 4 2;">
+                           <padding>
+                              <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                           </padding>
+                        </VBox>
+                     </content>
+                  </ScrollPane>
+               </children>
+            </VBox>
          </children>
       </VBox>
    </center>
