@@ -207,6 +207,9 @@
 package org.buet.fantasymanagerxi;
 
 import javafx.event.ActionEvent;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
+import javafx.collections.WeakListChangeListener;
 import org.buet.fantasymanagerxi.model.MarketMessage;
 import org.buet.fantasymanagerxi.model.Player;
 import javafx.fxml.*;
@@ -242,13 +245,14 @@ public class PlayerDBController implements NetworkThread.MessageListener {
 
     private ToggleGroup positionGroup;
     private String currentPosition = "ALL";
-    private List<Player> squad;
+    private final ObservableList<Player> squad = SessionManager.getSquad();
+    private final ListChangeListener<Player> squadListener = change -> refreshGrid();
+    private final WeakListChangeListener<Player> weakSquadListener = new WeakListChangeListener<>(squadListener);
 
     @FXML
     public void initialize() {
 
         // Get the squad the server already sent us at login
-        squad = SessionManager.getSquad();
         if (squad != null) {
             for (Player p : squad) {
                 if (p.getImagePath() == null) {
@@ -264,6 +268,7 @@ public class PlayerDBController implements NetworkThread.MessageListener {
 
         // Register this screen as the active message listener
         SessionManager.getNetworkThread().setListener(this);
+        squad.addListener(weakSquadListener);
 
         // Position toggle group
         positionGroup = new ToggleGroup();
@@ -446,13 +451,11 @@ public class PlayerDBController implements NetworkThread.MessageListener {
                 // Remove sold player from local squad and refresh
                 Player sold = (Player) msg.getPayload();
                 squad.removeIf(p -> p.getName().equals(sold.getName()));
-                SessionManager.setSquad(squad);
                 refreshGrid();
             }
             case SQUAD_UPDATE -> {
                 @SuppressWarnings("unchecked")
                 List<Player> updatedSquad = (List<Player>) msg.getPayload();
-                squad = updatedSquad;
                 SessionManager.setSquad(updatedSquad);
                 refreshGrid();
             }

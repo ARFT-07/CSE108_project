@@ -1,5 +1,7 @@
 package org.buet.fantasymanagerxi;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import org.buet.fantasymanagerxi.model.Player;
 
 import java.util.List;
@@ -9,7 +11,7 @@ public class SessionManager {
     private static NetworkThread networkThread;
     private static String loggedInClubId;
     private static String loggedInClubName;
-    private static List<Player> squad;
+    private static final ObservableList<Player> squad = FXCollections.observableArrayList();
 
     private static String currentScene = null;
     private static String previousScene = null;
@@ -38,16 +40,16 @@ public class SessionManager {
         networkThread = thread;
         loggedInClubId = clubId;
         loggedInClubName = clubName;
-        SessionManager.squad = squad;
+        setSquad(squad);
         clearNavigationHistory();
     }
 
-    public static List<Player> getSquad() {
+    public static ObservableList<Player> getSquad() {
         return squad;
     }
 
     public static void setSquad(List<Player> s) {
-        squad = s;
+        squad.setAll(s == null ? List.of() : s);
     }
 
     public static void updateSceneHistory(String newScene) {
@@ -85,7 +87,7 @@ public class SessionManager {
         networkThread = null;
         loggedInClubId = null;
         loggedInClubName = null;
-        squad = null;
+        squad.clear();
         clearNavigationHistory();
     }
 }

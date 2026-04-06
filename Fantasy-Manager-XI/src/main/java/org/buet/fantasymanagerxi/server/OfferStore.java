@@ -19,13 +19,13 @@ public class OfferStore {
         String clubId = ClubRegistry.toCode(offer.getTargetClubId());
         List<TransferOffer> offers = offersByTargetClub.computeIfAbsent(clubId, ignored -> new ArrayList<>());
 
-        boolean duplicatePending = offers.stream().anyMatch(existing ->
-                existing.getStatus() == TransferOffer.Status.PENDING
-                        && existing.getPlayerId().equals(offer.getPlayerId())
-                        && ClubRegistry.sameClub(existing.getOfferingClubId(), offer.getOfferingClubId()));
-
-        if (duplicatePending) {
-            throw new IllegalStateException("You already have an active offer for this player.");
+        for (TransferOffer existing : offers) {
+            if (existing.getStatus() == TransferOffer.Status.PENDING
+                    && existing.getPlayerId().equals(offer.getPlayerId())
+                    && ClubRegistry.sameClub(existing.getOfferingClubId(), offer.getOfferingClubId())) {
+                existing.setStatus(TransferOffer.Status.REJECTED);
+                existing.setDecisionNote("Superseded by a newer offer from the same club.");
+            }
         }
 
         offers.add(offer);

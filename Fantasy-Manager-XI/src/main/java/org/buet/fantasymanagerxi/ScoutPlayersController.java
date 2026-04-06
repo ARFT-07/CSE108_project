@@ -232,6 +232,13 @@ public class ScoutPlayersController implements NetworkThread.MessageListener {
                 alert.setHeaderText(null);
                 alert.setContentText(offer.getPlayerName() + ": " + offer.getDecisionNote());
                 alert.showAndWait();
+
+                SessionManager.getNetworkThread().sendMessage(new MarketMessage(MarketMessage.Type.GET_SCOUT_PLAYERS));
+            }
+            case SQUAD_UPDATE -> {
+                @SuppressWarnings("unchecked")
+                List<Player> updatedSquad = (List<Player>) msg.getPayload();
+                SessionManager.setSquad(updatedSquad);
             }
             case ERROR -> showError(String.valueOf(msg.getPayload()));
             default -> {
