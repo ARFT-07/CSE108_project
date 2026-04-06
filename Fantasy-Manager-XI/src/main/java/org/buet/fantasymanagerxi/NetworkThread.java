@@ -53,7 +53,12 @@ public class NetworkThread extends Thread {
             while (!socket.isClosed()) {
                 MarketMessage msg = (MarketMessage) in.readObject();
                 // Always update JavaFX UI from the JavaFX thread
-                Platform.runLater(() -> listener.onMessageReceived(msg));
+                Platform.runLater(() -> {
+                    applySessionStateUpdate(msg);
+                    if (listener != null) {
+                        listener.onMessageReceived(msg);
+                    }
+                });
             }
 
         } catch (ConnectException e) {
@@ -87,5 +92,12 @@ public class NetworkThread extends Thread {
         try {
             if (socket != null) socket.close();
         } catch (IOException ignored) {}
+    }
+
+    @SuppressWarnings("unchecked")
+    private void applySessionStateUpdate(MarketMessage msg) {
+        if (msg.getType() == MarketMessage.Type.SQUAD_UPDATE && msg.getPayload() instanceof java.util.List<?> players) {
+            SessionManager.setSquad((java.util.List<org.buet.fantasymanagerxi.model.Player>) players);
+        }
     }
 }

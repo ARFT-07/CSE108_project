@@ -107,6 +107,12 @@ public class PreHomeController implements NetworkThread.MessageListener {
                 }
                 SessionManager.getNetworkThread().sendMessage(new MarketMessage(MarketMessage.Type.GET_OFFERS));
             }
+            case SQUAD_UPDATE -> {
+                @SuppressWarnings("unchecked")
+                List<org.buet.fantasymanagerxi.model.Player> updatedSquad =
+                        (List<org.buet.fantasymanagerxi.model.Player>) msg.getPayload();
+                SessionManager.setSquad(updatedSquad);
+            }
             case ERROR -> offersSummaryLabel.setText(String.valueOf(msg.getPayload()));
             default -> {
             }

@@ -1,5 +1,7 @@
 package org.buet.fantasymanagerxi;
 
+import javafx.collections.ListChangeListener;
+import javafx.collections.WeakListChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -102,6 +104,8 @@ public class MyTeamController {
 
     private final List<StackPane> pitchSlots = new ArrayList<>();
     private final List<HBox> benchCards = new ArrayList<>();
+    private final ListChangeListener<Player> squadListener = change -> reloadSquadView();
+    private final WeakListChangeListener<Player> weakSquadListener = new WeakListChangeListener<>(squadListener);
 
     /**
      * Cached card background image (bg_card.png).
@@ -134,11 +138,10 @@ public class MyTeamController {
 
         clubLabel.setText(SessionManager.getLoggedInClub() != null
                 ? SessionManager.getLoggedInClub() : "My Team");
+        SessionManager.getSquad().addListener(weakSquadListener);
 
         buildFormationButtons();
-        distributeSquad();
-        renderPitch();
-        renderBench();
+        reloadSquadView();
     }
 
     // ══════════════════════════════════════════════════════════════════════════
@@ -235,10 +238,15 @@ public class MyTeamController {
         currentFormation = name;
         selectedPlayer = null;
         buildFormationButtons();
+        reloadSquadView();
+        setStatus("Formation changed to " + name);
+    }
+
+    private void reloadSquadView() {
+        selectedPlayer = null;
         distributeSquad();
         renderPitch();
         renderBench();
-        setStatus("Formation changed to " + name);
     }
 
     // ══════════════════════════════════════════════════════════════════════════
