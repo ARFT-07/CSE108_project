@@ -2,6 +2,8 @@ package org.buet.fantasymanagerxi.model;
 
 import java.io.Serializable;
 
+// why implement serializable, because then it can be converted into byte stream
+//and sent over a network, saved to a file and transferred between different parts of system
 public class MarketMessage implements Serializable {
     public enum Type {
         LOGIN,
