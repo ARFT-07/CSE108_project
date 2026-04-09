@@ -115,7 +115,6 @@ public class ClientHandler implements Runnable {
         }
 
         List<Player> scoutable = clubSquads.entrySet().stream()
-                .filter(entry -> !ClubRegistry.sameClub(entry.getKey(), loggedInClub))
                 .flatMap(entry -> entry.getValue().stream())
                 .sorted(Comparator.comparing(Player::getClub).thenComparing(Player::getName))
                 .collect(Collectors.toCollection(ArrayList::new));

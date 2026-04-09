@@ -98,6 +98,8 @@ public class ScoutPlayersController implements NetworkThread.MessageListener {
     }
 
     private VBox buildCard(Player player) {
+        boolean isOwnPlayer = ClubRegistry.sameClub(player.getClub(), SessionManager.getLoggedInClubId());
+
         VBox card = new VBox(8);
         card.setPrefWidth(210);
         card.setStyle("""
@@ -132,8 +134,10 @@ public class ScoutPlayersController implements NetworkThread.MessageListener {
 
         Label marketStatus = new Label(player.isOnMarket()
                 ? "Currently listed on transfer market"
-                : "Available for private offer");
-        marketStatus.setStyle("-fx-text-fill: " + (player.isOnMarket() ? "#38bdf8" : "#94a3b8") + "; -fx-font-size: 11;");
+                : (isOwnPlayer ? "Already in your squad" : "Available for private offer"));
+        marketStatus.setStyle("-fx-text-fill: "
+                + (player.isOnMarket() ? "#38bdf8" : (isOwnPlayer ? "#f59e0b" : "#94a3b8"))
+                + "; -fx-font-size: 11;");
 
         Button offerBtn = new Button("Make Offer");
         offerBtn.setMaxWidth(Double.MAX_VALUE);
@@ -145,7 +149,17 @@ public class ScoutPlayersController implements NetworkThread.MessageListener {
                 -fx-padding: 8 14;
                 -fx-cursor: hand;
                 """);
-        if (player.isOnMarket()) {
+        if (isOwnPlayer) {
+            offerBtn.setDisable(true);
+            offerBtn.setText("Your Player");
+            offerBtn.setStyle("""
+                    -fx-background-color: #7c2d12;
+                    -fx-text-fill: white;
+                    -fx-font-weight: bold;
+                    -fx-background-radius: 8;
+                    -fx-padding: 8 14;
+                    """);
+        } else if (player.isOnMarket()) {
             offerBtn.setDisable(true);
             offerBtn.setText("Use Transfer Market");
             offerBtn.setStyle("""

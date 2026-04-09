@@ -27,12 +27,12 @@ tasks.withType<JavaCompile> {
 
 application {
     mainModule.set("org.buet.fantasymanagerxi")
-    mainClass.set("org.buet.fantasymanagerxi.HelloApplication")
+    mainClass.set("org.buet.fantasymanagerxi.Launcher")
 }
 
 javafx {
     version = "21.0.6"
-    modules = listOf("javafx.controls", "javafx.fxml", "javafx.web", "javafx.swing" )
+    modules = listOf("javafx.controls", "javafx.fxml", "javafx.web", "javafx.swing", "javafx.media")
 }
 
 dependencies {
@@ -62,4 +62,11 @@ jlink {
     launcher {
         name = "app"
     }
+}
+
+tasks.register<JavaExec>("runServer") {
+    group = "application"
+    description = "Runs the socket-based transfer market server."
+    classpath = sourceSets.main.get().runtimeClasspath
+    mainClass.set("org.buet.fantasymanagerxi.server.TransferMarketServer")
 }
